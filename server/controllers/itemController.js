@@ -5,10 +5,8 @@ const uuid = require('uuid')
 const Decode = require('jwt-decode')
 const itemDto = require('../dtos/itemDtos')
 const userDto = require('../dtos/userDtos')
-
-
 //Импортируем модель офиса
-const {item} = require('../models/models')
+const {item, place, type} = require('../models/models')
 const {history} = require('../models/models')
 
 //Импортируем ApiError
@@ -40,13 +38,14 @@ class itemController {
             let Item
 
             if (UserDto.role === 'superuser') {
+
                 if(!officeId && !placeId && !subtypeId) {
 
-                    //То выводим все ноуты
+                    //То выводим все предметы
                     Item = await item.findAll()
                 }
 
-                //Проверяем условие если и placeId не существуют т.е. равно NULL, а officeId имеет какое-либо значение
+                //Проверяем условие если и placeId и subtypeId не существуют т.е. равно NULL, а officeId имеет какое-либо значение
                 if(officeId && !placeId && !subtypeId) {
 
                     //То выводим записи ноуты со всеми совпадающими значениями officeId
@@ -60,7 +59,6 @@ class itemController {
                     Item = await item.findAll({where:{placeId}})
 
                 }
-
                 //Проверяем условие если и officeId и placeId имеет какое-либо значение
                 if(!officeId && !placeId && subtypeId) {
 
@@ -146,41 +144,44 @@ class itemController {
             }
             return res.json(Item)
         } catch (e) {
-            console.log(e)
+            return res.json(e)
         }
-
-        // //Возвращаем ответ в json формате
-        // return res.json(Item)
     }
     async update (req, res) {
-        const {id, placeId, manage, officeId} = req.body
-        const User = Decode(req.headers.authorization)
-        let Item;
-        if (id && placeId && manage && officeId) {
-            const UserDto = new userDto(User)
-            Item = await item.update({manage: manage, placeId: placeId},{where: { id : id }})
-            const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, office:officeId, itemId: id, userId: UserDto.id})
-            return res.json({Item, historyData})
-        }
-        if (id && !placeId && manage) {
-            Item = await item.update({manage: manage},{where: { id : id }})
-            const UserDto = new userDto(User)
-            const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, itemId: id, userId: UserDto.id})
-            return res.json({Item, historyData})
-        }
-        if (id && placeId && !manage) {
-            Item = await item.update({placeId: placeId,manage: manage},{where: { id : id }})
-            const UserDto = new userDto(User)
-            const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, itemId: id, userId: UserDto.id})
-            return res.json({Item, historyData})
-        }
-        if (id && !placeId && !manage) {
-            Item = await item.update({placeId: placeId, manage: manage},{where: { id : id }})
-            const UserDto = new userDto(User)
-            const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, itemId: id, userId: UserDto.id})
-            return res.json({Item, historyData})
-        }
+        try {
+            const {id, placeId, manage, officeId} = req.body
+            const User = Decode(req.headers.authorization)
+            let Item;
+            if (id && placeId && manage && officeId) {
+                const UserDto = new userDto(User)
+                Item = await item.update({manage: manage, placeId: placeId},{where: { id : id }})
+                const Place = await place.findByPk(placeId)
+                const historyData = await history.create({action: 'Перемещен', manage: manage, place: Place.dataValues.name, office:officeId, itemId: id, userId: UserDto.id})
+                return res.json({Item, historyData})
+            }
+            if (id && !placeId && manage) {
+                Item = await item.update({manage: manage},{where: { id : id }})
+                const UserDto = new userDto(User)
+                const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, itemId: id, userId: UserDto.id})
+                return res.json({Item, historyData})
+            }
+            if (id && placeId && !manage) {
+                Item = await item.update({placeId: placeId,manage: manage},{where: { id : id }})
+                const UserDto = new userDto(User)
+                const Place = await place.findByPk(placeId)
+                const historyData = await history.create({action: 'Перемещен', manage: manage, place: Place.dataValues.name, office:officeId, itemId: id, userId: UserDto.id})
+                return res.json({Item, historyData})
+            }
+            if (id && !placeId && !manage) {
+                Item = await item.update({placeId: placeId, manage: manage},{where: { id : id }})
+                const UserDto = new userDto(User)
+                const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, itemId: id, userId: UserDto.id})
+                return res.json({Item, historyData})
+            }
 
+        } catch (e) {
+            console.log(e)
+        }
     }
     async replaceOffice (req, res) {
         try {

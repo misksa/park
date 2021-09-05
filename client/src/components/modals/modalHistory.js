@@ -45,9 +45,7 @@ const ModalHistory = observer(({show, onHide, Items}) => {
                                             :
                                         <td> </td>
                             )}
-                            {park.place.filter(place => place.id == History.place).map(place =>
-                                <td>{place.name}</td>
-                            )}
+                            <td>{History.place}</td>
                             <td>{History.manage}</td>
                             <td
                                 style={{cursor:'pointer'}}
