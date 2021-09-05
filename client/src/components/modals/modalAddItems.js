@@ -16,32 +16,6 @@ const ModalAddItems = observer(({show, onHide}) => {
         createItem({name:name, inventory:inventory, serial:serial, manage:manage, cpu:cpu, ram:ram, officeId: park.SelectedOffice.id, placeId:park.SelectedPlace.id, subtypeId: park.SelectedSubtype.id})
             .then(data => setName(''), setInventory(''), setSerial(''), setManage(''), setCpu(''), setRam(''), onHide())
     }
-
-    // function render () {
-    //     if (!park.SelectedSubtype) {
-    //         return <div></div>
-    //     } else if(park.SelectedSubtype.id === 1) {
-    //         return <FormControl
-    //             className={'mt-2'}
-    //             placeholder={'Введите модель ноутбука'}/>
-    //     }else if(park.SelectedSubtype.id !== 1) {
-    //         return <div>
-    //             <FormControl
-    //             className={'mt-2'}
-    //             placeholder={'Введите название или модель предмета'}/>
-    //             <FormControl
-    //                 className={'mt-2'}
-    //                 placeholder={'Введите серийный номер предмета'}/>
-    //             <FormControl
-    //                 className={'mt-2'}
-    //                 placeholder={'Введите инвентарный номер предмета'}/>
-    //             <FormControl
-    //                 className={'mt-2'}
-    //                 placeholder={'Введите id Имя и Фамилию менеджера за кем закреплен предмет'}/>
-    //         </div>
-    //     }
-    // }
-
     return (
         <Modal
             show={show}

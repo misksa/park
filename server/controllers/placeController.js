@@ -17,11 +17,11 @@ class placeController {
         const places = await place.findAll()
         return res.json(places)
     }
-    // async update (req, res) {
-    //     const {officeId} = req.body
-    //     const Subtype = await place.create(({officeId: officeId}))
-    //     return res.json(Subtype)
-    // }
+    async delete (req, res) {
+        const {placeId} = req.body
+        const Place = await place.destroy(({where: {id: placeId}}))
+        return res.json(Place)
+    }
 }
 
 

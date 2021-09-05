@@ -30,6 +30,11 @@ export const fetchPlace = async () => {
     return data
 }
 
+export const deletePlace = async (place) => {
+    const {data} = await $host.post('api/place/delete', place)
+    return data
+}
+
 //API для офиса
 export const createOffice = async (office) => {
     const {data} = await $host.post('api/office', office)

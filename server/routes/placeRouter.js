@@ -12,7 +12,7 @@ const placeController = require('../controllers/placeController')
 //Метод пост что бы создавать места в офисе
 router.post('/', placeController.create)
 
-// router.put('/', placeController.update)
+router.post('/delete', placeController.delete)
 
 //Получение мест в офисе
 router.get('/', placeController.get)

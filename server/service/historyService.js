@@ -9,8 +9,7 @@ class historyService {
        const UserDto = new userDto(decodeUser)
        const ItemDto = new itemDto(ItemData)
        const historyData = await history.create({action: 'create', manage: ItemDto.manage, office: ItemDto.officeId , place: ItemDto.placeId, itemId: ItemDto.id, userId: UserDto.id})
-
-        return historyData
+       return historyData
     }
 }
 

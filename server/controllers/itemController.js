@@ -6,7 +6,6 @@ const Decode = require('jwt-decode')
 const itemDto = require('../dtos/itemDtos')
 const userDto = require('../dtos/userDtos')
 
-const itemService = require('../service/itemService')
 
 //Импортируем модель офиса
 const {item} = require('../models/models')
@@ -14,7 +13,6 @@ const {history} = require('../models/models')
 
 //Импортируем ApiError
 const ApiError = require('../error/apiError')
-const {json} = require("express")
 
 //создаем класс функций для создания, получения и редактирования записей бд в таблице ноутов
 class itemController {
@@ -42,8 +40,8 @@ class itemController {
             let Item
 
             if (UserDto.role === 'superuser') {
-                // Item = await itemService.getAll(officeId, placeId, subtypeId)
                 if(!officeId && !placeId && !subtypeId) {
+
                     //То выводим все ноуты
                     Item = await item.findAll()
                 }
@@ -94,7 +92,6 @@ class itemController {
                     Item = await item.findAll({where:{officeId, placeId, subtypeId}})
                 }
             } else {
-                // Item = await itemService.getOne(UserDto, officeId, placeId, subtypeId)
                 //Проверяем условие если officeId  и placeId не существуют т.е. равно NULL
                 if(!officeId && !placeId && !subtypeId) {
                     //То выводим все ноуты
@@ -148,7 +145,6 @@ class itemController {
                 }
             }
             return res.json(Item)
-
         } catch (e) {
             console.log(e)
         }
@@ -181,7 +177,6 @@ class itemController {
         if (id && !placeId && !manage) {
             Item = await item.update({placeId: placeId, manage: manage},{where: { id : id }})
             const UserDto = new userDto(User)
-            const ItemDto = new itemDto(Item)
             const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, itemId: id, userId: UserDto.id})
             return res.json({Item, historyData})
         }
@@ -191,7 +186,6 @@ class itemController {
         try {
             const {id,officeId, placeId} = req.body
             const {img} =  req.files
-            // const fileName = new Date().toISOString() + '.jpg'
             const idItems = id.split(',')
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
@@ -208,9 +202,7 @@ class itemController {
         } catch (e) {
             console.log(e)
         }
-
     }
-
 }
 
 module.exports =  new itemController()
