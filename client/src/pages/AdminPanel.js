@@ -6,6 +6,7 @@ import ModalAddOffice from "../components/modals/modalAddOffice";
 import ModalAddSubtype from "../components/modals/modalAddSubtype";
 import {fetchOffice, fetchPlace, fetchSubtype, fetchType} from "../http/parkAPI";
 import {Context} from "../index";
+import moment from "moment"
 import ModalDeletePlace from "../components/modals/modalDeletePlace";
 import ModalAddUser from "../components/modals/addModalUser";
 import ModalDeleteUser from "../components/modals/deleteModalUser";
@@ -106,7 +107,7 @@ const AdminPanel = () => {
                                             <tr>
                                                 {user.client.filter(client => client.id == History.userId).map(client =>
                                                     <td>{client.username}</td>)}
-                                                <td>{History.createdAt}</td>
+                                                <td>{moment(History.createdAt).format('DD-MMM-YYYY HH:mm', 'ru')}</td>
                                                 <td>{History.action}</td>
                                                 {park.office.filter(office => office.id == History.office).map(office =>
                                                         <td>{office.name}</td>

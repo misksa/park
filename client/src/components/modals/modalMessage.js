@@ -3,6 +3,7 @@ import {Context} from "../../index";
 import {Modal, Button, FormControl, Row, Col, Table} from "react-bootstrap";
 import {createMessage, fetchMessage} from "../../http/parkAPI";
 import {observer} from "mobx-react-lite";
+import moment from "moment";
 
 const ModalMessage = observer(({Items, show, onHide}) => {
     const {park} = useContext(Context)
@@ -62,7 +63,7 @@ const ModalMessage = observer(({Items, show, onHide}) => {
                         {user.client.filter(client => client.id === Message.userId).map(client =>
                             <td>{client.username}</td>
                         )}
-                        <td>{Message.createdAt}</td>
+                        <td>{moment(History.createdAt).format('DD-MMM-YYYY HH:mm', 'ru')}</td>
                         <td>{Message.remark}</td>
                         </tr>
                     )}

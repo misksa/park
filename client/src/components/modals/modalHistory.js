@@ -2,6 +2,7 @@ import React, {useContext, useState} from 'react';
 import {Button, Modal, Table} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
+import moment from "moment";
 
 const ModalHistory = observer(({show, onHide, Items}) => {
     const {park} = useContext(Context)
@@ -37,7 +38,7 @@ const ModalHistory = observer(({show, onHide, Items}) => {
                         <tr>
                             {user.client.filter(client => client.id == History.userId).map(client =>
                                 <td>{client.username}</td>)}
-                                <td>{History.createdAt}</td>
+                                <td>{moment(History.createdAt).format('DD-MMM-YYYY HH:mm', 'ru')}</td>
                                 <td>{History.action}</td>
                             {park.office.filter(office => office.id == History.office).map(office =>
                                         office.name ?
