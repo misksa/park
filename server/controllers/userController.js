@@ -1,10 +1,5 @@
 //Создаем для роута свой контроллер, конкретно для userRouter
 
-//Импортируем bcrypt
-
-//Импортируем jwt
-const jwt = require('jsonwebtoken')
-
 //Импортируем модели user и office
 const {user} = require('../models/models')
 
@@ -12,24 +7,18 @@ const {user} = require('../models/models')
 const ApiError = require('../error/apiError')
 
 const userService = require('../service/userService')
-const {validationResult} = require('express-validator')
 //создаем класс функций для регистрации, логина и проверки авторизации
 class userController {
 
     //Создаем функцию регистрации
-    async registration (req, res, next) {
+    async registration (req, res) {
         try {
-            const errors = validationResult(req)
-            if (!errors.isEmpty()) {
-                return next(ApiError.badRequest('Ошибка при валидации заполните правильно поля', errors.array()))
-            }
             const {login, password, role, username} = req.body
-
-            const userData = await userService.registration(login, password, username, role)
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
-            return res.json(userData)
+            console.log(login, '---------------------------------')
+            const userData = await userService.registration(login, password, role, username)
+            return res.json(userData, login, password, role, username)
         } catch (e) {
-            next(e)
+            return res.json(e)
         }
     }
 
@@ -71,5 +60,16 @@ class userController {
         getUser = await user.findAll()
         return res.json(getUser)
     }
+    async delete (req, res, next) {
+        try {
+            const {id} = req.body
+            const UserDelete = await user.destroy({where: {id: id}})
+            const tokenDestroy = await userService.delete(id)
+            return res.json({UserDelete, tokenDestroy})
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }
 module.exports =  new userController()

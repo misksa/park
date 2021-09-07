@@ -17,6 +17,8 @@ export default class UserPark {
 
     this._iAm = {}
 
+    this._selectedClient = {}
+
      //Вызываем функцию makeAutoObservable и параметром передаем объект this, т.е. этот объект
     makeAutoObservable(this)
     }
@@ -40,6 +42,10 @@ export default class UserPark {
         this._client = client
     }
 
+    SetSelectedClient(client) {
+        this._selectedClient = client
+    }
+
     SetIAm (iAm) {
         this._iAm = iAm
     }
@@ -58,5 +64,8 @@ export default class UserPark {
     }
     get iAm() {
         return this._iAm
+    }
+    get  SelectedClient () {
+       return  this._selectedClient
     }
 }

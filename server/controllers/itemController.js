@@ -40,26 +40,20 @@ class itemController {
             if (UserDto.role === 'superuser') {
 
                 if(!officeId && !placeId && !subtypeId) {
-
                     //То выводим все предметы
                     Item = await item.findAll()
                 }
-
                 //Проверяем условие если и placeId и subtypeId не существуют т.е. равно NULL, а officeId имеет какое-либо значение
                 if(officeId && !placeId && !subtypeId) {
-
                     //То выводим записи ноуты со всеми совпадающими значениями officeId
                     Item = await item.findAll({where: {officeId}})
-
                 }
                 //Проверяем условие если и officeId не существуют т.е. равно NULL, а placeId имеет какое-либо значение
                 if(!officeId && placeId && !subtypeId) {
-
                     //То выводим записи ноуты со всеми совпадающими значениями placeId
                     Item = await item.findAll({where:{placeId}})
-
                 }
-                //Проверяем условие если и officeId и placeId имеет какое-либо значение
+                //Проверяем условие если и officeId и placeId не имеет какое-либо значение
                 if(!officeId && !placeId && subtypeId) {
 
                     //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId

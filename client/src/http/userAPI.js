@@ -2,9 +2,14 @@ import {$host} from "./index";
 import axios from "axios";
 import jwt_decode from 'jwt-decode'
 
-export const registration = async (login, password, role) => {
-    const {data} = await $host.post('api/user/registration', {login, password}, )
-    return jwt_decode(data.token)
+export const registration = async (User) => {
+    const {data} = await $host.post('api/user/registration', User)
+    return {data}
+}
+
+export const deleteUser = async (id) => {
+    const {data} = await $host.post('api/user/delete', id)
+    return {data}
 }
 
 export const Login = async (login, password) => {

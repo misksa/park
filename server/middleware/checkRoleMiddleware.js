@@ -17,14 +17,13 @@ module.exports = function (role) {
 
             //Проверяем есть ли токен
             if (!token) {
-
                 //если его нету выводим ошибку
                 return res.status(401).json({message: 'Пользователь не авторизован!'})
-
             }
 
             //Проверяем токен на валидность, первым параметром пишем токен вторым секретный ключ
-            const decoded = jwt.verify(token, process.env.SECRET_KEY)
+            // const decoded = jwt.verify(token, process.env.SECRET_KEY)
+            const decoded = jwt.decode(token)
 
             //Сравниваем декодированную с ролью в запросе
             if (decoded.role !== role) {
