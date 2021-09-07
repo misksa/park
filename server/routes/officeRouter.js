@@ -14,11 +14,7 @@ const officeController = require('../controllers/officeController')
 router.post('/',authMiddleware, officeController.create)
 
 //Запрос на получение всех офисов
-router.get('/', officeController.getAll)
-
-
-// Запрос на получение конкретного офиса
-router.get('/:id', officeController.getOne )
+router.get('/', authMiddleware, officeController.getAll)
 
 //экспортируем роутер из файла
 module.exports = router

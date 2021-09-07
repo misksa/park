@@ -7,15 +7,16 @@ const router = new Router()
 
 //Импортируем placeController где находятся функции
 const placeController = require('../controllers/placeController')
+const authMiddleware = require("../middleware/authMiddleware");
 
 //Методы по работе с местом в офисе
 //Метод пост что бы создавать места в офисе
-router.post('/', placeController.create)
+router.post('/', authMiddleware, placeController.create)
 
-router.post('/delete', placeController.delete)
+router.post('/delete', authMiddleware, placeController.delete)
 
 //Получение мест в офисе
-router.get('/', placeController.get)
+router.get('/', authMiddleware, placeController.get)
 
 //экспортируем роутер из файла
 module.exports = router

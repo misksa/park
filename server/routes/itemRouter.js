@@ -11,7 +11,7 @@ const itemController = require('../controllers/itemController')
 
 //методы запросов по работе с мебелью
 //Метод пост что бы создавать новые предметы
-router.post('/', itemController.create)
+router.post('/', authMiddleware, itemController.create)
 
 //Метод пост для редактирования предметов
 router.put('/update',authMiddleware, itemController.update)

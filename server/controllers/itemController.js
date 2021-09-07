@@ -27,10 +27,9 @@ class itemController {
         }
         catch (e) {
             next(ApiError.badRequest(e.message))
-            console.log(e)
         }
     }
-    async get (req, res) {
+    async get (req, res, next) {
         try {
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
@@ -138,7 +137,7 @@ class itemController {
             }
             return res.json(Item)
         } catch (e) {
-            return res.json(e)
+            next(ApiError.badRequest(e.message))
         }
     }
     async update (req, res) {

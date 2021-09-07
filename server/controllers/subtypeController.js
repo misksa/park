@@ -28,26 +28,31 @@ class subtypeController {
     }
 
     //Тут реализована логика вычеслений сколько какого оборудования в каком офисе
-    async count (req, res) {
-
-        let Count = []
-        let officeCount = await office.count()
-        for (let z = 1; z <= officeCount; z++) {
-            const subtypeCount = await subtype.count()
-            for (let i = 1; i <= subtypeCount; i++) {
-                let itemCount = await item.count({where: {
+    async count (req, res, next) {
+        try {
+            let Count = []
+            let officeCount = await office.count()
+            for (let z = 1; z <= officeCount; z++) {
+                const subtypeCount = await subtype.count()
+                for (let i = 1; i <= subtypeCount; i++) {
+                    let itemCount = await item.count({where: {
+                            subtypeId: i,
+                            officeId: z
+                        }})
+                    let object = {
+                        officeId: z,
                         subtypeId: i,
-                        officeId: z
-                    }})
-                let object = {
-                    officeId: z,
-                    subtypeId: i,
-                    count: itemCount,
+                        count: itemCount,
+                    }
+                    Count.push(object)
                 }
-                Count.push(object)
             }
+            return res.json(Count)
+
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
         }
-        return res.json(Count)
+
     }
 }
 

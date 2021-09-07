@@ -10,8 +10,6 @@ const router = new Router()
 const historyController = require('../controllers/historyController')
 
 //Методы по работе с сообщениями
-//Отправка сообщений об изменении
-// router.post('/', historyController.create)
 
 // Получение сообщений об изменении
 router.get('/', authMiddleware, historyController.get)

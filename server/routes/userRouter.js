@@ -24,7 +24,7 @@ router.post('/registration',
 router.post('/login', userController.login)
 
 //Эндпоинт для логаута
-router.post('/logout', userController.logout)
+router.post('/logout', authMiddleware, userController.logout)
 
 //эндпоинт для удаления пользователя
 router.post('/delete', checkRoleMiddleware('superuser'), userController.delete)
