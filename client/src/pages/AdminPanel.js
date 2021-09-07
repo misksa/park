@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Container, ButtonGroup, Row, Col} from "react-bootstrap";
+import {Button, Container, ButtonGroup, Row, Col, Card, Table} from "react-bootstrap";
 import ModalAddPlace from "../components/modals/modalAddPlace";
 import ModalAddItems from "../components/modals/modalAddItems";
 import ModalAddOffice from "../components/modals/modalAddOffice";
@@ -27,6 +27,9 @@ const AdminPanel = () => {
         fetchType().then(data => park.SetTypeItem(data))
         fetchSubtype().then(data => park.SetSubtype(data))
     }, [])
+
+
+
     return (
         <Container className='mt-2 ml-1'>
             {user.iAm.role === 'superuser' ?
@@ -77,7 +80,61 @@ const AdminPanel = () => {
                                 Добавить предмет</Button>
                         </ButtonGroup>
                     </Col>
-                    <Col>
+                    <Col md={10}>
+                        <Card style={{ float:'right'
+                        }}>
+                            <Card.Body>
+                                <Card.Title>Последние изменения в парке</Card.Title>
+                                <Card.Text
+                                    style={{overflow: 'scroll', width: '50rem', height:'20rem'}}
+
+                                >
+                                    <Table striped bordered hover size="sm">
+                                        <thead>
+                                        <tr>
+                                            <th>Админ</th>
+                                            <th>Время</th>
+                                            <th>Действие</th>
+                                            <th>Офис</th>
+                                            <th>Место</th>
+                                            <th>Менеджер</th>
+                                            <th>Акт</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {park.History.map(History =>
+                                            <tr>
+                                                {user.client.filter(client => client.id == History.userId).map(client =>
+                                                    <td>{client.username}</td>)}
+                                                <td>{History.createdAt}</td>
+                                                <td>{History.action}</td>
+                                                {park.office.filter(office => office.id == History.office).map(office =>
+                                                        <td>{office.name}</td>
+                                                )}
+                                                <td>{History.place}</td>
+                                                <td>{History.manage}</td>
+                                                {History.img ?
+                                                    <td
+                                                        style={{cursor:'pointer'}}
+                                                    >
+                                                        <a
+                                                            target={"_blank"}
+                                                            href={'http://localhost:5000/'+ History.img}><img
+                                                            width={30}
+                                                            height={30}
+                                                            src={'http://localhost:5000/'+ History.img}
+                                                        /></a></td>
+                                                    :
+                                                    <td></td>
+                                                }
+
+                                            </tr>
+                                        )}
+                                        </tbody>
+                                    </Table>
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
                     </Col>
                 </Row>
                 :
