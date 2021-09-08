@@ -48,16 +48,20 @@ const ModalHistory = observer(({show, onHide, Items}) => {
                             )}
                             <td>{History.place}</td>
                             <td>{History.manage}</td>
-                            <td
-                                style={{cursor:'pointer'}}
-                            >
-                                <a
-                                    target={"_blank"}
-                                    href={'http://localhost:5000/'+ History.img}><img
-                                    width={30}
-                                    height={30}
-                                    src={'http://localhost:5000/'+ History.img}
-                                /></a></td>
+                            {History.img ?
+                                <td
+                                    style={{cursor:'pointer'}}
+                                >
+                                    <a
+                                        target={"_blank"}
+                                        href={'http://localhost:5000/'+ History.img}><img
+                                        width={30}
+                                        height={30}
+                                        src={'http://localhost:5000/'+ History.img}
+                                    /></a></td>
+                                :
+                                <td></td>
+                            }
                         </tr>
                         )}
                     </tbody>
