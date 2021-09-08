@@ -13,6 +13,8 @@ const authMiddleware = require("../middleware/authMiddleware");
 //Метод пост что бы создавать места в офисе
 router.post('/', authMiddleware, placeController.create)
 
+router.post('/edit', authMiddleware, placeController.edit)
+
 router.post('/delete', authMiddleware, placeController.delete)
 
 //Получение мест в офисе

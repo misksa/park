@@ -7,7 +7,7 @@ import ModalAddSubtype from "../components/modals/modalAddSubtype";
 import {fetchOffice, fetchPlace, fetchSubtype, fetchType} from "../http/parkAPI";
 import {Context} from "../index";
 import moment from "moment"
-import ModalDeletePlace from "../components/modals/modalDeletePlace";
+import ModalEditPlace from "../components/modals/modalEditPlace";
 import ModalAddUser from "../components/modals/addModalUser";
 import ModalDeleteUser from "../components/modals/deleteModalUser";
 import ModalAddType from "../components/modals/addModalType";
@@ -68,7 +68,7 @@ const AdminPanel = () => {
                                 className='mt-1'
                                 onClick={() => setDeletePlaceVisible(true)}
                             >
-                                Удалить КЦ</Button>
+                                Редактировать/удалить КЦ</Button>
                             <Button
                                 variant={'secondary'}
                                 className='mt-1'
@@ -166,15 +166,11 @@ const AdminPanel = () => {
             <ModalAddItems show={addPCVisible} onHide={() => setAddPCVisible(false)} />
             <ModalAddOffice show={addOfficeVisible} onHide={() => setAddOfficeVisible(false)} />
             <ModalAddSubtype show={addSubtypeVisible} onHide={() => setAddSubtypeVisible(false)} />
-            <ModalDeletePlace show={deletePlaceVisible} onHide={() => setDeletePlaceVisible(false)} />
+            <ModalEditPlace show={deletePlaceVisible} onHide={() => setDeletePlaceVisible(false)} />
             <ModalAddUser show={addUser} onHide={() => setAddUser(false)} />
             <ModalDeleteUser show={deleteUser} onHide={() => setDeleteUser(false)} />
             <ModalAddType show={addTypeVisible} onHide={() => setAddTypeVisible(false)} />
-
         </Container>
-
-
-
     );
 };
 

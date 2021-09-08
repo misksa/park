@@ -1,16 +1,24 @@
-import React, {useContext} from 'react';
-import {Button, Modal, Dropdown, DropdownButton, ButtonGroup} from "react-bootstrap";
+import React, {useContext, useState} from 'react';
+import {Button, Modal, Dropdown, ButtonGroup, FormControl} from "react-bootstrap";
 import {Context} from "../../index";
-import {deletePlace} from "../../http/parkAPI";
+import {deletePlace, editPlace} from "../../http/parkAPI";
 import {observer} from "mobx-react-lite";
 
 
-const ModalDeletePlace = observer(({show, onHide}) => {
+const ModalEditPlace = observer(({show, onHide}) => {
     const {park} = useContext(Context)
+    const [name, setName] = useState('')
     const DeletePlace = () => {
         deletePlace({placeId: park.SelectedPlace.id}).then(data => {
             onHide()
             park.SetSelectedPlace('')
+        })
+    }
+    const EditPlace = () => {
+        editPlace({name: name, placeId: park.SelectedPlace.id}).then(data => {
+            onHide()
+            park.SetSelectedPlace('')
+            setName('')
         })
     }
     return (
@@ -22,7 +30,7 @@ const ModalDeletePlace = observer(({show, onHide}) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Удаление КЦ, школы или места в офисе
+                    Выберите КЦ, школу, место что бы удалить или переименовать
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -56,8 +64,16 @@ const ModalDeletePlace = observer(({show, onHide}) => {
                             )}
                         </Dropdown.Menu>
                     </Dropdown>
+                <FormControl
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    className={'mt-2'}
+                    placeholder='Введите название нового кц'
+                />
             </Modal.Body>
             <Modal.Footer>
+
+                <Button variant='outline-success' onClick={EditPlace}>Переименовать</Button>
                 <Button variant='outline-danger' onClick={DeletePlace}>Удалить</Button>
                 <Button variant='light' onClick={onHide}>Закрыть</Button>
             </Modal.Footer>
@@ -65,4 +81,4 @@ const ModalDeletePlace = observer(({show, onHide}) => {
     );
 });
 
-export default ModalDeletePlace;
+export default ModalEditPlace;

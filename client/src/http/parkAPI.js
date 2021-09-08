@@ -34,6 +34,10 @@ export const fetchPlace = async () => {
     return data
 }
 
+export const editPlace = async (place) => {
+    const {data} = await $host.post('api/place/edit', place)
+    return data
+}
 export const deletePlace = async (place) => {
     const {data} = await $host.post('api/place/delete', place)
     return data

@@ -29,7 +29,7 @@ const ModalAddSubtype = observer(({show, onHide}) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Добавление нового КЦ типа техники
+                    Добавление нового подтипа техники
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>

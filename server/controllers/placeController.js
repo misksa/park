@@ -5,6 +5,7 @@ const {place} = require('../models/models')
 
 //Импортируем ApiError
 const ApiError = require('../error/apiError')
+const {where} = require("sequelize");
 
 //создаем класс функций для создания и получения мест в офисе
 class placeController {
@@ -20,6 +21,11 @@ class placeController {
     async delete (req, res) {
         const {placeId} = req.body
         const Place = await place.destroy(({where: {id: placeId}}))
+        return res.json(Place)
+    }
+    async edit (req, res) {
+        const {placeId, name} = req.body
+        const Place = await place.update({name: name}, {where: {id:placeId}})
         return res.json(Place)
     }
 }
