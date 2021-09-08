@@ -15,8 +15,6 @@ const ModalAddSubtype = observer(({show, onHide}) => {
         formData.append('typeId', park.SelectedTypeItem.id)
         formData.append('img', file)
         createSubtype(formData).then(data => onHide())
-        // createSubtype({name: name, typeId: park.SelectedTypeItem.id, img: file}).then(data => setName(''), onHide())
-
     }
     const selectFile = e => {
         setFile(e.target.files[0])

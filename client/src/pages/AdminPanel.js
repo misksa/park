@@ -10,6 +10,7 @@ import moment from "moment"
 import ModalDeletePlace from "../components/modals/modalDeletePlace";
 import ModalAddUser from "../components/modals/addModalUser";
 import ModalDeleteUser from "../components/modals/deleteModalUser";
+import ModalAddType from "../components/modals/addModalType";
 const AdminPanel = () => {
 
     const {park} = useContext(Context)
@@ -21,6 +22,7 @@ const AdminPanel = () => {
     const [deletePlaceVisible, setDeletePlaceVisible ] = useState(false)
     const [addUser, setAddUser] = useState(false)
     const [deleteUser, setDeleteUser] = useState(false)
+    const [addTypeVisible, setAddTypeVisible] = useState(false)
 
     useEffect(()=> {
         fetchPlace().then(data => park.SetPlace(data))
@@ -67,6 +69,12 @@ const AdminPanel = () => {
                                 onClick={() => setDeletePlaceVisible(true)}
                             >
                                 Удалить КЦ</Button>
+                            <Button
+                                variant={'secondary'}
+                                className='mt-1'
+                                onClick={() => setAddTypeVisible(true)}
+                            >
+                                Добавить тип техники</Button>
                             <Button
                                 variant={'secondary'}
                                 className='mt-1'
@@ -161,6 +169,7 @@ const AdminPanel = () => {
             <ModalDeletePlace show={deletePlaceVisible} onHide={() => setDeletePlaceVisible(false)} />
             <ModalAddUser show={addUser} onHide={() => setAddUser(false)} />
             <ModalDeleteUser show={deleteUser} onHide={() => setDeleteUser(false)} />
+            <ModalAddType show={addTypeVisible} onHide={() => setAddTypeVisible(false)} />
 
         </Container>
 
