@@ -10,9 +10,9 @@ const {DataTypes} = require('sequelize')
 const user = sequelize.define('user', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     login: {type: DataTypes.STRING, unique: true, },
-    username: {type: DataTypes.STRING, allowNull: true, },
-    password: {type: DataTypes.STRING },
-    role: {type: DataTypes.STRING, defaultValue: "USER"}
+    username: {type: DataTypes.STRING, allowNull: false, },
+    password: {type: DataTypes.STRING, allowNull: false },
+    role: {type: DataTypes.STRING, allowNull: false}
 })
 
 //Модель токена
@@ -48,6 +48,7 @@ const item = sequelize.define('item', {
     manage: {type: DataTypes.STRING, allowNull: true },
     cpu: {type: DataTypes.STRING, allowNull: true },
     ram: {type: DataTypes.STRING, allowNull: true },
+    placeStatus: {type: DataTypes.INTEGER, defaultValue: 1, allowNull: false },
     check: {type: DataTypes.BOOLEAN, allowNull: true }
 })
 

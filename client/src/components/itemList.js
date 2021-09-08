@@ -4,6 +4,7 @@ import ModalItems from "./modals/modalItems";
 import {Context} from "../index";
 import {fetchSubtype} from "../http/parkAPI";
 import {observer} from "mobx-react-lite";
+import BadgeStatusPlace from "./badgeStatusPlace";
 
 const ItemList = observer(({Items}) => {
     useEffect(()=> {
@@ -19,15 +20,10 @@ const ItemList = observer(({Items}) => {
     }
 
     return (
-
         <Col md={4} className='mt-3 '>
             <Card>
                 <div className='d-flex justify-content-end align-items-center ml-2 mt-1'>
-                    <Badge
-                        className='mr-4'
-                        style={{cursor: 'pointer'}}
-                        variant='success'
-                        >На месте</Badge>
+                    <BadgeStatusPlace Items={Items} />
                     <div className='d-flex mb-4'>
                         {park.replaceItems ?
                             <input

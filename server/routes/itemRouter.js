@@ -19,6 +19,9 @@ router.put('/update',authMiddleware, itemController.update)
 //Эндпоинт на перенос между офисами
 router.put('/office',authMiddleware, itemController.replaceOffice)
 
+router.put('/status',authMiddleware, itemController.status)
+
+
 
 //Получение предметов
 router.get('/',authMiddleware, itemController.get)

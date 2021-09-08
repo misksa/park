@@ -20,6 +20,10 @@ export const replaceOffice = async  (item) => {
     const {data} = await $host.put('api/item/office', item)
     return (data)
 }
+export const editStatus = async (item) => {
+    const {data} = await $host.put('api/item/status', item)
+    return data
+}
 //API для мест
 export const createPlace = async (place) => {
     const {data} = await $host.post('api/place', place)

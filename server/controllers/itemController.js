@@ -18,10 +18,9 @@ class itemController {
         try {
             const User = Decode(req.headers.authorization)
             const {name, serial, inventory, manage, cpu, ram, placeId, subtypeId, officeId} = req.body
-            const ItemData = await item.create({name, serial, inventory, manage, cpu, ram, placeId, subtypeId, officeId})
+            const ItemData = await item.create({name, serial, inventory, manage, cpu, ram , placeId, subtypeId, officeId})
             const ItemDto = new itemDto(ItemData)
             const UserDto = new userDto(User)
-
             const historyData = await history.create({action: 'create', manage: ItemDto.manage, office: ItemDto.officeId , place: ItemDto.placeId, itemId: ItemDto.id, userId: UserDto.id})
             return res.json({ItemData, historyData})
         }
@@ -187,15 +186,28 @@ class itemController {
             img.mv(path.resolve(__dirname, '..', 'static', fileName))
             let Item
             let historyData
-            console.log(id)
             for (let i = 0; i < idItems.length; i++) {
                 Item = await item.update({officeId: officeId, placeId: placeId},{where: { id : idItems[i]}})
                 historyData = await history.create({action: 'Перемещен', place: placeId, office: officeId, itemId: idItems[i], userId: UserDto.id, img: fileName})
             }
-            return res.json('Запрос прошел')
+            return res.json(Item, historyData)
+        } catch (e) {
+            return res.json(e)
+        }
+
+    }
+    async status (req, res) {
+        try {
+            const {id, placeStatus} = req.body
+
+            const Item = await item.update({placeStatus: placeStatus},{where: {id:id}})
+
+
+            return res.json(Item)
         } catch (e) {
             console.log(e)
         }
+
     }
 }
 
