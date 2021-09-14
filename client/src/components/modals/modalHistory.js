@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Button, Modal, Table} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
@@ -7,6 +7,15 @@ import moment from "moment";
 const ModalHistory = observer(({show, onHide, Items}) => {
     const {park} = useContext(Context)
     const {user} = useContext(Context)
+    const scrollEndRef = useRef(null)
+
+    const scrollBottom = () => {
+        scrollEndRef.current?.scrollIntoView({behavior: 'smooth'})
+    }
+
+    useEffect(() => {
+        scrollBottom()
+    }, [show]);
 
     return (
         <Modal
@@ -20,7 +29,10 @@ const ModalHistory = observer(({show, onHide, Items}) => {
                     История
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body
+                style={{overflow: 'scroll', width: '49rem', height:'20rem'}}
+            >
+                <div>
                 <Table striped bordered hover size="sm">
                     <thead>
                     <tr>
@@ -40,14 +52,22 @@ const ModalHistory = observer(({show, onHide, Items}) => {
                                 <td>{client.username}</td>)}
                                 <td>{moment(History.createdAt).format('DD-MMM-YYYY HH:mm', 'ru')}</td>
                                 <td>{History.action}</td>
-                            {park.office.filter(office => office.id == History.office).map(office =>
-                                        office.name ?
-                                        <td>{office.name}</td>
+                            {History.office?
+                                park.office.filter(office => office.id == History.office).map(office =>
+                                        <td>{office.name}</td>)
                                             :
                                         <td> </td>
-                            )}
-                            <td>{History.place}</td>
-                            <td>{History.manage}</td>
+                            }
+                            {History.place ?
+                                <td>{History.place}</td>
+                                :
+                                <td> </td>
+                            }
+                            {History.manage ?
+                                <td>{History.manage}</td>
+                                :
+                                <td> </td>
+                            }
                             {History.img ?
                                 <td
                                     style={{cursor:'pointer'}}
@@ -60,12 +80,14 @@ const ModalHistory = observer(({show, onHide, Items}) => {
                                         src={'http://localhost:5000/'+ History.img}
                                     /></a></td>
                                 :
-                                <td></td>
+                                <td>  </td>
                             }
                         </tr>
                         )}
+                    <div ref={scrollEndRef}></div>
                     </tbody>
                 </Table>
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>

@@ -36,7 +36,10 @@ const ModalGiveItems = observer(({ Items, show, onHide }) => {
                     Выдать {Items.name} {Items.inventory} на руки сотруднику:
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body
+                style={{ width: '49rem', height:'20rem'}}
+            >
+
                 <FormControl
                     className={'mt-3'}
                     value={name}
@@ -48,6 +51,8 @@ const ModalGiveItems = observer(({ Items, show, onHide }) => {
                     type="file"
                     onChange={selectFile}
                 />
+
+
             </Modal.Body>
             <Modal.Footer>
 

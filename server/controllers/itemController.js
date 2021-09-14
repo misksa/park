@@ -219,7 +219,7 @@ class itemController {
             img.mv(path.resolve(__dirname, '..', 'static', fileName))
             const Item = await item.update({manage: name, placeStatus: 2},{where: { id : id}})
             const historyData = await history.create({action: 'Выдан на руки', manage: name, itemId: id, userId: UserDto.id, img: fileName})
-            return res.json('status ok')
+            return res.json(Item, historyData)
         } catch (e) {
             return res.json(e)
         }

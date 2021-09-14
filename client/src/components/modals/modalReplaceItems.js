@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {Context} from "../../index";
-import {Button, ButtonGroup, Col, Dropdown, Form, FormControl, Modal, Row, Table} from "react-bootstrap";
+import {Button, ButtonGroup, Col, Dropdown, Form, Modal, Table} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {replaceOffice} from "../../http/parkAPI";
 
@@ -25,7 +25,7 @@ const ModalReplaceItems = observer(({show, onHide}) => {
             formData.append('officeId', park.SelectedModalOffice.id)
             formData.append('placeId', park.SelectedModalPlace.id)
             formData.append('img', file)
-            replaceOffice(formData).then(data => onHide)
+            replaceOffice(formData).then(onHide)
         } else {
             alert('При переносе между офисами обязательно нужно выбрать офис, место в офисе и акт!!')
         }

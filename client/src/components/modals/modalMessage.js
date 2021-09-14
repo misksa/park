@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Context} from "../../index";
 import {Modal, Button, FormControl, Row, Col, Table} from "react-bootstrap";
 import {createMessage, fetchMessage} from "../../http/parkAPI";
@@ -18,10 +18,15 @@ const ModalMessage = observer(({Items, show, onHide}) => {
         },[park.SelectedMessage])
 
 
-    const date = park.Message.filter(message => message.itemId === Items.id).map(message => message.createdAt)
+    const scrollEndRef = useRef(null)
 
-    console.log(date)
+    const scrollBottom = () => {
+        scrollEndRef.current?.scrollIntoView({behavior: 'smooth'})
+    }
 
+    useEffect(() => {
+        scrollBottom()
+    }, [show]);
 
     return (
         <Modal
@@ -48,8 +53,12 @@ const ModalMessage = observer(({Items, show, onHide}) => {
                     </Row>
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                <Table striped bordered hover size="sm">
+            <Modal.Body
+                style={{overflow: 'scroll', width: '49rem', height:'20rem'}}
+            >
+                <Table striped bordered hover size="sm"
+
+                >
                     <thead>
                     <tr>
                         <th>Админ</th>
@@ -67,6 +76,7 @@ const ModalMessage = observer(({Items, show, onHide}) => {
                         <td>{Message.remark}</td>
                         </tr>
                     )}
+                    <div ref={scrollEndRef}></div>
                     </tbody>
                 </Table>
             </Modal.Body>

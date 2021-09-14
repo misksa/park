@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Button, Container, ButtonGroup, Row, Col, Card, Table} from "react-bootstrap";
 import ModalAddPlace from "../components/modals/modalAddPlace";
 import ModalAddItems from "../components/modals/modalAddItems";
@@ -31,7 +31,15 @@ const AdminPanel = () => {
         fetchSubtype().then(data => park.SetSubtype(data))
     }, [])
 
+    const scrollEndRef = useRef(null)
 
+    const scrollBottom = () => {
+        scrollEndRef.current?.scrollIntoView({behavior: 'smooth'})
+    }
+
+    useEffect(() => {
+        scrollBottom()
+    }, []);
 
     return (
         <Container className='mt-2 ml-1'>
@@ -117,9 +125,12 @@ const AdminPanel = () => {
                                                     <td>{client.username}</td>)}
                                                 <td>{moment(History.createdAt).format('DD-MMM-YYYY HH:mm', 'ru')}</td>
                                                 <td>{History.action}</td>
-                                                {park.office.filter(office => office.id == History.office).map(office =>
-                                                        <td>{office.name}</td>
-                                                )}
+                                                {History.office ?
+                                                    park.office.filter(office => office.id == History.office).map(office =>
+                                                        <td>{office.name}</td>)
+                                                    :
+                                                    <td></td>
+                                                }
                                                 <td>{History.place}</td>
                                                 <td>{History.manage}</td>
                                                 {History.img ?
@@ -139,6 +150,7 @@ const AdminPanel = () => {
 
                                             </tr>
                                         )}
+                                        <div ref={scrollEndRef}></div>
                                         </tbody>
                                     </Table>
                                 </Card.Text>
