@@ -7,6 +7,7 @@ import {observer} from "mobx-react-lite";
 import {updateItem} from "../../http/parkAPI";
 import ModalMessage from "./modalMessage"
 import ModalHistory from "./modalHistory";
+import ModalGiveItems from "./modalGiveItems";
 
 const ModalItems = observer(({ Items, show, onHide }) => {
 
@@ -14,6 +15,8 @@ const ModalItems = observer(({ Items, show, onHide }) => {
     const [manage, setManage] = useState(Items.manage)
     const [modalMessage, setModalMessage] = useState(false)
     const [modalHistory, setModalHistory] = useState(false)
+    const [modalGiveItems, setModalGiveItems] = useState(false)
+
 
 
 
@@ -105,6 +108,7 @@ const ModalItems = observer(({ Items, show, onHide }) => {
 
             </Modal.Body>
             <Modal.Footer>
+                <Button variant={'outline-warning'} onClick={()=> setModalGiveItems(true)}>Выдать на руки</Button>
                 <Button variant='outline-primary' onClick={() => { setModalMessage(true)
                 }}
                 >Заметка</Button>
@@ -114,7 +118,7 @@ const ModalItems = observer(({ Items, show, onHide }) => {
             </Modal.Footer>
             <ModalMessage show={modalMessage} Items={Items} onHide={() => setModalMessage(false)} />
             <ModalHistory show={modalHistory} Items={Items} onHide={() => setModalHistory(false)} />
-
+            <ModalGiveItems show={modalGiveItems} Items={Items} onHide={() => setModalGiveItems(false)}/>
         </Modal>
 
 

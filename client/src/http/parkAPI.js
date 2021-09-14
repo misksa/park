@@ -13,15 +13,19 @@ export const fetchItem = async (officeId, placeId, subtypeId) => {
     return (data)
 }
 export const updateItem = async  (item) => {
-    const {data} = await $host.put('api/item/update', item)
+    const {data} = await $host.post('api/item/update', item)
     return (data)
 }
 export const replaceOffice = async  (item) => {
-    const {data} = await $host.put('api/item/office', item)
+    const {data} = await $host.post('api/item/office', item)
     return (data)
 }
 export const editStatus = async (item) => {
-    const {data} = await $host.put('api/item/status', item)
+    const {data} = await $host.post('api/item/status', item)
+    return data
+}
+export const giveItem = async (item) => {
+    const {data} = await $host.post('api/item/give', item)
     return data
 }
 //API для мест

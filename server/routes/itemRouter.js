@@ -14,12 +14,15 @@ const itemController = require('../controllers/itemController')
 router.post('/', authMiddleware, itemController.create)
 
 //Метод пост для редактирования предметов
-router.put('/update',authMiddleware, itemController.update)
+router.post('/update',authMiddleware, itemController.update)
 
 //Эндпоинт на перенос между офисами
-router.put('/office',authMiddleware, itemController.replaceOffice)
+router.post('/office',authMiddleware, itemController.replaceOffice)
 
-router.put('/status',authMiddleware, itemController.status)
+router.post('/status',authMiddleware, itemController.status)
+
+router.post('/give',authMiddleware, itemController.giveItem)
+
 
 
 

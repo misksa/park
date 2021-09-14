@@ -209,6 +209,22 @@ class itemController {
         }
 
     }
+    async giveItem (req, res) {
+        try {
+            const {id,name} = req.body
+            const {img} =  req.files
+            const User = Decode(req.headers.authorization)
+            const UserDto = new userDto(User)
+            let fileName = uuid.v4() + '.jpg'
+            img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            const Item = await item.update({manage: name, placeStatus: 2},{where: { id : id}})
+            const historyData = await history.create({action: 'Выдан на руки', manage: name, itemId: id, userId: UserDto.id, img: fileName})
+            return res.json('status ok')
+        } catch (e) {
+            return res.json(e)
+        }
+
+    }
 }
 
 module.exports =  new itemController()
