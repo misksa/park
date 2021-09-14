@@ -10,7 +10,7 @@ import {authRoutes, publicRoutes} from "../routes";
 
 import {Context} from "../index";
 
-import {PARK_ROUTE} from "../utils/consts";
+import {LOGIN_ROUTE, PARK_ROUTE} from "../utils/consts";
 
 const AppRouter = () => {
 
@@ -19,16 +19,21 @@ const AppRouter = () => {
     //Делаем деструктуризацию, вызываем хук useContext и туда передаем тот контекст который создавали
     const {user} = useContext(Context)
     return (
-        <Switch>
-            {user.isAuth && authRoutes.map(({path, component})=>
-                <Route key={path} path={path} component={component} />
-            )}
-            {publicRoutes.map(({path, component})=>
-                <Route key={path} path={path} component={component} />
-            )}
 
+    <Switch>
+        {user.isAuth ?
+            authRoutes.map(({path, component})=>
+            <Route key={path} path={path} component={component} />)
+            :
+            publicRoutes.map(({path, component})=>
+            <Route key={path} path={path} component={component} />)
+            }
+        {user.isAuth ?
             <Redirect to={PARK_ROUTE}/>
-        </Switch>
+            :
+            <Redirect to={LOGIN_ROUTE}/>
+        }
+    </Switch>
     )
 }
 export default AppRouter;
