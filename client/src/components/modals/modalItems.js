@@ -59,9 +59,12 @@ const ModalItems = observer(({ Items, show, onHide }) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div>Название: {Items.name}</div>
-                <div>Инвентарный номер: {Items.inventory}</div>
-                <div>Серийный номер: {Items.serial}</div>
+                {park.office.filter(office => office.id == Items.officeId).map(office =>
+                    <div>Офис: {office.name}</div>
+                )}
+                {park.place.filter(Place => Place.id == Items.placeId).map(Place =>
+                    <div>Место: {Place.name}</div>
+                )}
                 <div>Сотрудник:
                     {park.SelectedEdit === true ?
                         <input
@@ -72,7 +75,7 @@ const ModalItems = observer(({ Items, show, onHide }) => {
                             value={manage}
                             onChange={(e) => {
                                 setManage(e.target.value)
-                                }
+                            }
                             }
                             onBlur={() => park.SetSelectedEdit(false)}
                         />
@@ -94,6 +97,12 @@ const ModalItems = observer(({ Items, show, onHide }) => {
                         </span>
                     }
                 </div>
+                <div>Название: {Items.name}</div>
+                <div>Инвентарный номер: {Items.inventory}</div>
+                <div>Серийный номер: {Items.serial}</div>
+                <div>Оперативная память: {Items.ram}</div>
+                <div>Процессор: {Items.cpu}</div>
+
             </Modal.Body>
             <Modal.Footer>
                 <Button variant='outline-primary' onClick={() => { setModalMessage(true)
