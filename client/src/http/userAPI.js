@@ -25,7 +25,7 @@ export const Logout = async () => {
 
 
 export const refresh = async () => {
-        const {data} = await axios.get(`http://localhost:5000/api/user/refresh`, {withCredentials: true})
+        const {data} = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/user/refresh`, {withCredentials: true})
         console.log(data)
         localStorage.setItem('accessToken', data.accessToken)
         return jwt_decode(data.accessToken)
