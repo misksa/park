@@ -37,7 +37,7 @@ app.use(cookieParser())
 app.use(express.json())
 //передаем в app функцию cors, что бы можно было взаимодействовать с сервером из браузера
 const corsOption = {
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT_URL,
     credentials: true,
     optionsSuccessStatus: 200
 }
