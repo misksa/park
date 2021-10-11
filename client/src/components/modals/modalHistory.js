@@ -59,9 +59,10 @@ const ModalHistory = observer(({show, onHide, Items}) => {
                                         <td> </td>
                             }
                             {History.place ?
-                                <td>{History.place}</td>
+                                park.place.filter(place => place.id == History.place).map(place =>
+                                    <td>{place.name}</td>)
                                 :
-                                <td> </td>
+                                <td></td>
                             }
                             {History.manage ?
                                 <td>{History.manage}</td>

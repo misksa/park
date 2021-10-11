@@ -1,6 +1,5 @@
 import {$host} from "./index";
 import axios from "axios";
-import jwt_decode from 'jwt-decode'
 
 export const registration = async (User) => {
     const {data} = await $host.post('api/user/registration', User)
@@ -14,13 +13,15 @@ export const deleteUser = async (id) => {
 
 export const Login = async (login, password) => {
     const {data} = await $host.post('api/user/login', {login, password})
-    localStorage.setItem('accessToken', data.accessToken)
-    return jwt_decode(data.accessToken)
+    //Добавление токена перенес в файл Login.js
+    // localStorage.setItem('accessToken', data.accessToken)
+    return {data}
 }
 
 export const Logout = async () => {
     const {data} = await $host.post('api/user/logout')
     localStorage.removeItem('accessToken')
+    return {data}
 }
 
 
@@ -28,7 +29,7 @@ export const refresh = async () => {
         const {data} = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/user/refresh`, {withCredentials: true})
         console.log(data)
         localStorage.setItem('accessToken', data.accessToken)
-        return jwt_decode(data.accessToken)
+        return {data}
 }
 //Получение пользователей
 export const fetchUser = async () => {

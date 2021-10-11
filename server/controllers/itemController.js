@@ -26,6 +26,7 @@ class itemController {
         }
         catch (e) {
             next(ApiError.badRequest(e.message))
+            return res.json(e)
         }
     }
     async get (req, res, next) {
@@ -137,6 +138,7 @@ class itemController {
             return res.json(Item)
         } catch (e) {
             next(ApiError.badRequest(e.message))
+            return res.json(e)
         }
     }
     async update (req, res) {
@@ -172,7 +174,7 @@ class itemController {
             }
 
         } catch (e) {
-            console.log(e)
+            return res.json(e)
         }
     }
     async replaceOffice (req, res) {
@@ -190,7 +192,8 @@ class itemController {
                 Item = await item.update({officeId: officeId, placeId: placeId},{where: { id : idItems[i]}})
                 historyData = await history.create({action: 'Перемещен', place: placeId, office: officeId, itemId: idItems[i], userId: UserDto.id, img: fileName})
             }
-            return res.json(Item, historyData)
+            console.log(Item)
+            return res.json('okay')
         } catch (e) {
             return res.json(e)
         }
@@ -199,13 +202,10 @@ class itemController {
     async status (req, res) {
         try {
             const {id, placeStatus} = req.body
-
             const Item = await item.update({placeStatus: placeStatus},{where: {id:id}})
-
-
             return res.json(Item)
         } catch (e) {
-            console.log(e)
+            return res.json(e)
         }
 
     }

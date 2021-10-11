@@ -14,11 +14,9 @@ class userController {
     async registration (req, res) {
         try {
             const {login, password, role, username} = req.body
-            console.log(login, '---------------------------------')
             const userData = await userService.registration(login, password, role, username)
             return res.json(userData, login, password, role, username)
         } catch (e) {
-            return res.json(e)
         }
     }
 
@@ -30,7 +28,7 @@ class userController {
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
             return res.json(userData)
         } catch (e) {
-            next(e)
+            res.json(e)
         }
     }
 
@@ -41,7 +39,7 @@ class userController {
             res.clearCookie('refreshToken')
             return res.json({token})
         } catch (e) {
-            next(e)
+            return res.json(e)
         }
     }
 
@@ -52,7 +50,7 @@ class userController {
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
             return res.json(userData)
         } catch (e) {
-            console.log(e)
+            return res.json(e)
         }
     }
     async get (req, res, next) {
@@ -67,7 +65,7 @@ class userController {
             const tokenDestroy = await userService.delete(id)
             return res.json({UserDelete, tokenDestroy})
         } catch (e) {
-            next(e)
+            return res.json(e)
         }
     }
 
