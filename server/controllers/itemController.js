@@ -184,15 +184,14 @@ class itemController {
             const idItems = id.split(',')
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
-            let fileName = uuid.v4() + '.jpg'
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            const fileName="Act_" + new Date().toJSON().slice(0,10)+".jpg"
+            img.mv(path.resolve(__dirname, '..', 'act', fileName))
             let Item
             let historyData
             for (let i = 0; i < idItems.length; i++) {
                 Item = await item.update({officeId: officeId, placeId: placeId},{where: { id : idItems[i]}})
                 historyData = await history.create({action: 'Перемещен', place: placeId, office: officeId, itemId: idItems[i], userId: UserDto.id, img: fileName})
             }
-            console.log(Item)
             return res.json('okay')
         } catch (e) {
             return res.json(e)
@@ -215,8 +214,8 @@ class itemController {
             const {img} =  req.files
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
-            let fileName = uuid.v4() + '.jpg'
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            let fileName = new Date()
+            img.mv(path.resolve(__dirname, '..', 'act', fileName+'.jpg'))
             const Item = await item.update({manage: name, placeStatus: 2},{where: { id : id}})
             const historyData = await history.create({action: 'Выдан на руки', manage: name, itemId: id, userId: UserDto.id, img: fileName})
             return res.json(Item, historyData)

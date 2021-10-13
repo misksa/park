@@ -45,6 +45,8 @@ app.use(cors(corsOption))
 //
 app.use(express.static(path.resolve(__dirname, 'static')))
 
+app.use(express.static(path.resolve(__dirname, 'act')))
+
 app.use(fileUpload({}))
 
 //передаем в app наши роуты "/api" - url по которому роутер должен обрабатываться

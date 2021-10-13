@@ -5,3 +5,4 @@ server/node_modules
 .idea
 .gitignore
 server/static
+server/act
