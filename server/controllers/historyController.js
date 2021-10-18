@@ -8,9 +8,7 @@ const ApiError = require('../error/apiError')
 
 //создаем класс функций для создания, получения и редактирования записей бд в таблице истории
 class historyController {
-    async create(req, res, next) {
 
-    }
     async get(req, res) {
         let getHistory
         getHistory = await history.findAll()

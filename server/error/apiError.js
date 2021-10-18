@@ -26,7 +26,10 @@ class ApiError extends Error{
     static unauthorized(message) {
         return new ApiError(401, message)
     }
-
+    //Функция пустые данные
+    static noContent(message) {
+        return new ApiError(204, message)
+    }
     //функиця internal внутренняя ошибка сервера
     static internal(message) {
         return new ApiError(500, message)

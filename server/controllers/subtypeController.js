@@ -13,6 +13,9 @@ class subtypeController {
         try {
             const {name, typeId} = req.body
             const {img} =  req.files
+            if(!name && !typeId && !img) {
+                throw ApiError.noContent('Empty Data')
+            }
             let fileName = uuid.v4() + '.jpg'
             await img.mv(path.resolve(__dirname, '..', 'static', fileName))
             const Subtype = await subtype.create(({name, typeId, img: fileName}))

@@ -10,15 +10,15 @@ const ApiError = require('../error/apiError')
 class typeController {
     async create (req, res) {
         const {name} = req.body
+        if(!name) {
+            throw ApiError.noContent('Empty Data')
+        }
         const Type = await type.create(({name}))
         return res.json({Type})
     }
     async get (req, res) {
         const Type = await type.findAll()
         return res.json(Type)
-    }
-    async edit (req, res) {
-
     }
 }
 

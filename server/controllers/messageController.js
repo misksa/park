@@ -12,6 +12,9 @@ class messageController {
     async send (req, res, next) {
         try {
             let {remark, itemId} = req.body
+            if(!remark && !itemId) {
+                throw ApiError.noContent('Empty Data')
+            }
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
             const sendMessage = await Message.create({remark: remark, userId: UserDto.id, itemId: itemId})

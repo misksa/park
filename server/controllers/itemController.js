@@ -18,6 +18,9 @@ class itemController {
         try {
             const User = Decode(req.headers.authorization)
             const {name, serial, inventory, manage, cpu, ram, placeId, subtypeId, officeId} = req.body
+            if(!name && !serial && !inventory && !placeId && !subtypeId && !officeId) {
+                throw ApiError.noContent('Empty Data')
+            }
             const ItemData = await item.create({name, serial, inventory, manage, cpu, ram , placeId, subtypeId, officeId})
             const ItemDto = new itemDto(ItemData)
             const UserDto = new userDto(User)
@@ -143,14 +146,17 @@ class itemController {
     }
     async update (req, res) {
         try {
-            const {id, placeId, manage, officeId} = req.body
+            const {id, placeId, manage} = req.body
+            if(!id && !placeId && !manage){
+                    throw ApiError.noContent('Empty Data')
+            }
             const User = Decode(req.headers.authorization)
             let Item;
-            if (id && placeId && manage && officeId) {
+            if (id && placeId && manage) {
                 const UserDto = new userDto(User)
                 Item = await item.update({manage: manage, placeId: placeId},{where: { id : id }})
                 const Place = await place.findByPk(placeId)
-                const historyData = await history.create({action: 'Перемещен', manage: manage, place: Place.dataValues.name, office:officeId, itemId: id, userId: UserDto.id})
+                const historyData = await history.create({action: 'Перемещен', manage: manage, place: Place.dataValues.name, itemId: id, userId: UserDto.id})
                 return res.json({Item, historyData})
             }
             if (id && !placeId && manage) {
@@ -181,6 +187,9 @@ class itemController {
         try {
             const {id,officeId, placeId} = req.body
             const {img} =  req.files
+            if(!id && !officeId && !placeId && !img) {
+                throw ApiError.noContent('Empty Data')
+            }
             const idItems = id.split(',')
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
@@ -201,6 +210,9 @@ class itemController {
     async status (req, res) {
         try {
             const {id, placeStatus} = req.body
+            if(!id && !placeStatus) {
+                throw ApiError.noContent('Empty Data')
+            }
             const Item = await item.update({placeStatus: placeStatus},{where: {id:id}})
             return res.json(Item)
         } catch (e) {
@@ -212,6 +224,9 @@ class itemController {
         try {
             const {id,name} = req.body
             const {img} =  req.files
+            if(!id && !name && !img) {
+                throw ApiError.noContent('Empty Data')
+            }
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
             const fileName="Act_" + new Date().toJSON().slice(0,10)+".jpg"

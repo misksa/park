@@ -13,6 +13,9 @@ class officeController {
         //Создаем переменную name которую будем брать из req.body (тело запроса)
         const {name} = req.body
 
+        if(!name) {
+            throw ApiError.noContent('Empty Data')
+        }
         //Создаем переменную Office в которую делаем запрос в бд на создание записи в name
         const Office = await office.create({name})
 
@@ -27,12 +30,6 @@ class officeController {
         //Возвращаем ответ в json формате
         return res.json (offices)
     }
-
-    async getOne (req, res) {
-
-    }
-
-
 }
 
 module.exports =  new officeController()

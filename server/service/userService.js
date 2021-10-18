@@ -38,7 +38,7 @@ class userService {
 
     async login(login, password) {
         if(!login || !password) {
-            throw ApiError.badRequest('Логин и пароль не может быть пустым')
+            throw ApiError.noContent('Логин и пароль не может быть пустым')
         }
         const User = await user.findOne({where:{login}})
         if(!User) {

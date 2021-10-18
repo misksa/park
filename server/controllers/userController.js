@@ -14,6 +14,9 @@ class userController {
     async registration (req, res) {
         try {
             const {login, password, role, username} = req.body
+            if(!login && !password && !username && !role) {
+                throw ApiError.noContent('Empty Data')
+            }
             const userData = await userService.registration(login, password, role, username)
             return res.json(userData, login, password, role, username)
         } catch (e) {
@@ -61,6 +64,9 @@ class userController {
     async delete (req, res, next) {
         try {
             const {id} = req.body
+            if(!id) {
+                throw ApiError.noContent('Empty Data')
+            }
             const UserDelete = await user.destroy({where: {id: id}})
             const tokenDestroy = await userService.delete(id)
             return res.json({UserDelete, tokenDestroy})
