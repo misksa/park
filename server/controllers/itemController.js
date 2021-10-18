@@ -192,11 +192,11 @@ class itemController {
                 Item = await item.update({officeId: officeId, placeId: placeId},{where: { id : idItems[i]}})
                 historyData = await history.create({action: 'Перемещен', place: placeId, office: officeId, itemId: idItems[i], userId: UserDto.id, img: fileName})
             }
-            return res.json('okay')
+            const data = 'Переместили'
+            return res.json(data)
         } catch (e) {
             return res.json(e)
         }
-
     }
     async status (req, res) {
         try {
@@ -214,11 +214,11 @@ class itemController {
             const {img} =  req.files
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
-            let fileName = new Date()
-            img.mv(path.resolve(__dirname, '..', 'act', fileName+'.jpg'))
+            const fileName="Act_" + new Date().toJSON().slice(0,10)+".jpg"
+            img.mv(path.resolve(__dirname, '..', 'act', fileName))
             const Item = await item.update({manage: name, placeStatus: 2},{where: { id : id}})
             const historyData = await history.create({action: 'Выдан на руки', manage: name, itemId: id, userId: UserDto.id, img: fileName})
-            return res.json(Item, historyData)
+            return res.json('Выдано')
         } catch (e) {
             return res.json(e)
         }

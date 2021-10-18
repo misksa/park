@@ -2,14 +2,30 @@ import React, {useState} from 'react';
 import {Button, FormControl, Modal, Form} from "react-bootstrap";
 import {createType} from "../../http/parkAPI";
 import {observer} from "mobx-react-lite";
+import {toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const ModalAddType = observer(({show, onHide}) => {
     const [name, setName] = useState( '')
     const addType = () => {
-        const formData = new FormData()
-        formData.append('name', name)
-        createType(formData).then(data => onHide())
+        if(!name){
+            toast.error('Напиши название', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }else{
+            const formData = new FormData()
+            formData.append('name', name)
+            createType(formData).then(data => onHide())
+            setName('')
+        }
     }
 
     return (
@@ -37,6 +53,7 @@ const ModalAddType = observer(({show, onHide}) => {
             <Modal.Footer>
                 <Button variant='outline-success' onClick={addType}>Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
+                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

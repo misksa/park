@@ -11,7 +11,7 @@ const ModalMessage = observer(({Items, show, onHide}) => {
     const [message, setMessage] = useState('')
     const sendMessage = () => {
         createMessage({remark: message, itemId: Items.id})
-            .then(data => setMessage(''))
+            .then(data => park.SetMessage(data))
     }
         useEffect(() =>{
             fetchMessage().then(data => park.SetMessage(data))

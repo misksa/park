@@ -3,6 +3,8 @@ import {Button, FormControl, Modal, Form, Dropdown, ButtonGroup} from "react-boo
 import {createItem} from "../../http/parkAPI";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
+import 'react-toastify/dist/ReactToastify.css';
+import {toast, ToastContainer} from "react-toastify";
 
 const ModalAddItems = observer(({show, onHide}) => {
     const {park} = useContext(Context)
@@ -12,9 +14,77 @@ const ModalAddItems = observer(({show, onHide}) => {
     const [manage, setManage] = useState('')
     const [cpu, setCpu] = useState('')
     const [ram, setRam] = useState('')
+    if(park.SelectedPlace.officeId !== park.SelectedOffice.id) {
+        park.SetSelectedPlace('')
+    }
     const AddItems = () => {
-        createItem({name:name, inventory:inventory, serial:serial, manage:manage, cpu:cpu, ram:ram, officeId: park.SelectedOffice.id, placeId:park.SelectedPlace.id, subtypeId: park.SelectedSubtype.id})
-            .then(data => setName(''), setInventory(''), setSerial(''), setManage(''), setCpu(''), setRam(''), onHide())
+        if(!park.SelectedOffice.id){
+            toast.error('Выбери офис', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }else{
+            if(!park.SelectedPlace.id){
+                toast.error('Выбери место', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }else {
+                if(!park.SelectedSubtype.id){
+                    toast.error('Выбери подтип', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                } else {
+                    if(!name) {
+                        toast.error('Введи название', {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                    }else{
+                        if(!inventory){
+                            toast.error('Введи инвентарный номер', {
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: true,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                        } else {
+                            createItem({name:name, inventory:inventory, serial:serial, manage:manage, cpu:cpu, ram:ram, officeId: park.SelectedOffice.id, placeId:park.SelectedPlace.id, subtypeId: park.SelectedSubtype.id})
+                                .then(data => setName(''), setInventory(''), setSerial(''), setManage(''), setCpu(''), setRam(''), onHide())
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    const dropStatePark = () => {
+        park.SetSelectedOffice('')
+        park.SetSelectedPlace('')
     }
     return (
         <Modal
@@ -22,6 +92,8 @@ const ModalAddItems = observer(({show, onHide}) => {
             onHide={onHide}
             size="lg"
             centered
+            onExit={dropStatePark}
+
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -127,6 +199,7 @@ const ModalAddItems = observer(({show, onHide}) => {
             <Modal.Footer>
                 <Button variant='outline-success' onClick={AddItems}>Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
+                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

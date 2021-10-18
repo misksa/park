@@ -15,7 +15,8 @@ class messageController {
             const User = Decode(req.headers.authorization)
             const UserDto = new userDto(User)
             const sendMessage = await Message.create({remark: remark, userId: UserDto.id, itemId: itemId})
-            return res.json(sendMessage)
+            const getMessage = await Message.findAll()
+            return res.json(getMessage)
         }
         catch (e) {
             next(ApiError.badRequest(e.message))

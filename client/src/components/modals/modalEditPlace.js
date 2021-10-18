@@ -3,23 +3,93 @@ import {Button, Modal, Dropdown, ButtonGroup, FormControl} from "react-bootstrap
 import {Context} from "../../index";
 import {deletePlace, editPlace} from "../../http/parkAPI";
 import {observer} from "mobx-react-lite";
+import {toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const ModalEditPlace = observer(({show, onHide}) => {
     const {park} = useContext(Context)
     const [name, setName] = useState('')
     const DeletePlace = () => {
-        deletePlace({placeId: park.SelectedPlace.id}).then(data => {
-            onHide()
-            park.SetSelectedPlace('')
-        })
+        if(!park.SelectedOffice.id){
+            toast.error('Выбери офис', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }else {
+            if (!park.SelectedPlace.id) {
+                toast.error('Выбери кц для удаления', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } else {
+                deletePlace({placeId: park.SelectedPlace.id}).then(data => {
+                    onHide()
+                    park.SetSelectedPlace('')
+                })
+            }
     }
+    }
+
     const EditPlace = () => {
-        editPlace({name: name, placeId: park.SelectedPlace.id}).then(data => {
-            onHide()
-            park.SetSelectedPlace('')
-            setName('')
-        })
+        if(!park.SelectedOffice.id) {
+            toast.error('Выбери офис', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else {
+            if(!park.SelectedPlace.id){
+                toast.error('Выбери место для редактирования', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }else{
+                if(!name){
+                    toast.error('Введи новое название', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }else{
+                    editPlace({name: name, placeId: park.SelectedPlace.id}).then(data => {
+                        onHide()
+                        park.SetSelectedPlace('')
+                        park.SetSelectedOffice('')
+                        setName('')
+                    })
+                }
+            }
+
+        }
+    }
+    const dropStatePark = () => {
+        park.SetSelectedOffice('')
+        park.SetSelectedPlace('')
     }
     return (
         <Modal
@@ -27,6 +97,7 @@ const ModalEditPlace = observer(({show, onHide}) => {
             onHide={onHide}
             size="lg"
             centered
+            onExit={dropStatePark}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -72,10 +143,10 @@ const ModalEditPlace = observer(({show, onHide}) => {
                 />
             </Modal.Body>
             <Modal.Footer>
-
                 <Button variant='outline-success' onClick={EditPlace}>Переименовать</Button>
                 <Button variant='outline-danger' onClick={DeletePlace}>Удалить</Button>
                 <Button variant='light' onClick={onHide}>Закрыть</Button>
+                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

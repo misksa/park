@@ -1,12 +1,10 @@
-import React, {useContext, useState} from 'react';
+import React, { useState} from 'react';
 import {Modal, Button, FormControl, Form} from "react-bootstrap";
-import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
-import {giveItem, updateItem} from "../../http/parkAPI";
-
+import {giveItem} from "../../http/parkAPI";
+import {toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const ModalGiveItems = observer(({ Items, show, onHide }) => {
-
-    const {park} = useContext(Context)
     const [name, setName] = useState('')
     const [file, setFile] = useState(null)
 
@@ -16,9 +14,17 @@ const ModalGiveItems = observer(({ Items, show, onHide }) => {
             formData.append('id', Items.id)
             formData.append('name', name)
             formData.append('img', file)
-            giveItem(formData).then(onHide)
+            giveItem(formData).then(data => onHide()).then(setName(''), setFile(null))
         } else {
-            alert('При выдаче на руки обязательно нужен акт и указать имя!!!')
+          toast.error('Укажи имя фамилию сотрудника и загрузи акт приема-передачи', {
+             position: "top-right",
+             autoClose: 5000,
+             hideProgressBar: true,
+             closeOnClick: true,
+             pauseOnHover: true,
+             draggable: true,
+             progress: undefined,
+          })
         }
     }
     const selectFile = e => {
@@ -39,7 +45,6 @@ const ModalGiveItems = observer(({ Items, show, onHide }) => {
             <Modal.Body
                 style={{ width: '49rem', height:'20rem'}}
             >
-
                 <FormControl
                     className={'mt-3'}
                     value={name}
@@ -51,14 +56,12 @@ const ModalGiveItems = observer(({ Items, show, onHide }) => {
                     type="file"
                     onChange={selectFile}
                 />
-
-
             </Modal.Body>
             <Modal.Footer>
-
                 <Button variant='outline-success' onClick={giveItems}>Принять</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
             </Modal.Footer>
+            <ToastContainer/>
         </Modal>
 
 

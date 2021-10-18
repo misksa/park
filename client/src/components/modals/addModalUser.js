@@ -3,6 +3,9 @@ import {Button, FormControl, Modal, Form, Dropdown} from "react-bootstrap";
 import {registration} from "../../http/userAPI";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
+import {toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ModalAddUser = observer(({show, onHide}) => {
     const [username, setUsername] = useState( '')
@@ -11,26 +14,60 @@ const ModalAddUser = observer(({show, onHide}) => {
     const {park} = useContext(Context)
 
     const addUser = () => {
-        const formData = new FormData()
-        formData.append('login', login)
-        formData.append('password', password)
-        formData.append('role', park.SelectedOffice.id)
-        formData.append('username', username)
-        registration(formData).then(data => onHide())
-        // registration({login: login, password: password, role: park.SelectedOffice.id, username: username,}).then(data => {
-        //     setUsername('')
-        //     setLogin('')
-        //     setPassword('')
-        //     onHide()
-        // })
+        if(!username) {
+            toast.error('Введи имя и фамилию', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }else {
+            if(!login) {
+                toast.error('Введи логин', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } else{
+                if(!password) {
+                    toast.error('Введи пароль', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                } else {
+                    const formData = new FormData()
+                    formData.append('login', login)
+                    formData.append('password', password)
+                    formData.append('role', park.SelectedOffice.id)
+                    formData.append('username', username)
+                    registration(formData).then(data => onHide())
+                    park.SetSelectedOffice('')
+                }
+            }
+        }
     }
-
+    const dropStatePark = () => {
+        park.SetSelectedOffice('')
+    }
     return (
         <Modal
             show={show}
             onHide={onHide}
             size="lg"
             centered
+            onExit={dropStatePark}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -72,6 +109,7 @@ const ModalAddUser = observer(({show, onHide}) => {
                                 >
                                     {office.name}</Dropdown.Item>
                             )}
+                            <Dropdown.Item>SuperUser</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Form>
@@ -79,6 +117,7 @@ const ModalAddUser = observer(({show, onHide}) => {
             <Modal.Footer>
                 <Button variant='outline-success' onClick={addUser}>Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
+                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

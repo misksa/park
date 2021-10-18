@@ -8,6 +8,8 @@ import {updateItem} from "../../http/parkAPI";
 import ModalMessage from "./modalMessage"
 import ModalHistory from "./modalHistory";
 import ModalGiveItems from "./modalGiveItems";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 const ModalItems = observer(({ Items, show, onHide }) => {
 
@@ -17,13 +19,22 @@ const ModalItems = observer(({ Items, show, onHide }) => {
     const [modalHistory, setModalHistory] = useState(false)
     const [modalGiveItems, setModalGiveItems] = useState(false)
 
-
-
-
     const itemUpdate = () => {
-        updateItem({ manage: manage , id: Items.id, officeId: park.SelectedOffice.id, placeId: park.SelectedModalPlace.id}).then(data =>
-            park.SetSelectedModalPlace(''),
-            onHide())
+        if(Items.manage === manage && !park.SelectedModalPlace.id){
+            toast.error('Нужно сделать хоть какие-то изменения', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else{
+            updateItem({ manage: manage , id: Items.id, officeId: park.SelectedOffice.id, placeId: park.SelectedModalPlace.id}).then(data =>
+                    park.SetSelectedModalPlace(''),
+                onHide())
+        }
     }
     const escFunction = (event) => {
         if (event.keyCode === 27) {
@@ -55,7 +66,6 @@ const ModalItems = observer(({ Items, show, onHide }) => {
                                         onClick={() => park.SetSelectedModalPlace(place)}
                                     >
                                         {place.name}</Dropdown.Item>
-
                                 )}
                             </Dropdown.Menu>
                         </Dropdown>
@@ -119,6 +129,7 @@ const ModalItems = observer(({ Items, show, onHide }) => {
             <ModalMessage show={modalMessage} Items={Items} onHide={() => setModalMessage(false)} />
             <ModalHistory show={modalHistory} Items={Items} onHide={() => setModalHistory(false)} />
             <ModalGiveItems show={modalGiveItems} Items={Items} onHide={() => setModalGiveItems(false)}/>
+            <ToastContainer/>
         </Modal>
 
 
