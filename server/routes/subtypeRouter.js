@@ -13,9 +13,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 //Метод пост что бы создавать новую технику
 router.post('/', authMiddleware, subtypeController.create)
 
-//метод пост для редактирования техники
-router.get('/count', authMiddleware, subtypeController.count)
-
 //Получать технику
 router.get('/', authMiddleware, subtypeController.get)
 

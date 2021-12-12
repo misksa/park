@@ -13,9 +13,7 @@ export default class UserPark {
 
     this._user = {}
 
-    this._client = {}
-
-    this._iAm = {}
+    this._client = []
 
     this._selectedClient = {}
 
@@ -45,26 +43,20 @@ export default class UserPark {
     SetSelectedClient(client) {
         this._selectedClient = client
     }
-
-    SetIAm (iAm) {
-        this._iAm = iAm
-    }
     //Создаем гетеры, они нужны для того что бы получать переменные из нашего состояния
     //Они вызываются только в том случае если переменная которая внутри AppRouter была изменена
     get isAuth() {
         return this._isAuth
     }
 
-    get user() {
+    get User() {
         return this._user
     }
 
-    get client() {
+    get Client() {
         return this._client
     }
-    get iAm() {
-        return this._iAm
-    }
+
     get  SelectedClient () {
        return  this._selectedClient
     }

@@ -1,0 +1,43 @@
+.BlockOffice {
+    width: auto;
+    height: auto;
+    margin-top: 10px;
+    margin-left: 50px;
+    float: left;
+}
+
+.OfficeName {
+    height: auto;
+    width: auto;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+.SubtypeBlock {
+    padding: 10px;
+    margin-top: 5px;
+    background-color: aliceblue;
+    border: 1px solid grey;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    align-items: center;
+}
+.SubtypeName {
+    height: auto;
+    width: auto;
+    margin-top: 50px;
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+.placeBlock {
+    height: auto;
+    width: auto;
+    margin-left: 5px;
+    float: right;
+
+}
+
+.count {
+    margin-left: 5px;
+}

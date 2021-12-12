@@ -25,7 +25,7 @@ ReactDOM.render(
         park: new Park()
 
     }}>
-        <App />
+        <App/>
     </Context.Provider>,
   document.getElementById('root')
 );

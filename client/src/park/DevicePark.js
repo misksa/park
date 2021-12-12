@@ -1,7 +1,11 @@
-/*В этом файле mobix следит за изменением переменных isAuth и user
+/*В этом файле mobx следит за изменением переменных isAuth и user
 и соотвественно при их изменении будут перерендываться компоненты*/
 
-import {makeAutoObservable} from "mobx";
+import { makeAutoObservable} from "mobx";
+
+// configure({
+//     useProxies: "never"
+// })
 
 //Экспортируем и создаем class UserPark
 export default class Park {
@@ -10,6 +14,7 @@ export default class Park {
     constructor() {
         //Создаем переменную isAuth _ означает что переменная изменяться не может
         this._office = []
+        this._authOffice =[]
         this._Message = []
         this._place = []
         this._Items = []
@@ -19,6 +24,8 @@ export default class Park {
         this._Count = []
         this._replaceItems = false
         this._edit = false
+        this._load = null
+        this._filter = ''
         this._SelectedSubtype = {}
         this._SelectedEdit = {}
         this._SelectedPlace = {}
@@ -26,11 +33,21 @@ export default class Park {
         this._SelectedModalOffice = {}
         this._SelectedTypeItem = {}
         this._SelectedOffice = {}
-        this._SelectedItems = {}
+        this._SelectedItems = []
         this._SelectedMessage = {}
         this._page = 1
-        this._totalCount = 0
-        this._limit = 3
+        this._totalCountItems = 0
+        this._limitItems = 20
+        this._pageHistory = 1
+        this._totalCountHistory = 0
+        this._limitHistory = 27
+        this._pageHistoryModal = 1
+        this._totalCountHistoryModal = 0
+        this._limitHistoryModal = 15
+        this._pageMessage = 1
+        this._totalCountMessage = 0
+        this._limitMessage = 5
+
         //Вызываем функцию makeAutoObservable и параметром передаем объект this, т.е. этот объект
         makeAutoObservable(this)
     }
@@ -38,7 +55,11 @@ export default class Park {
     SetOffice(office) {
         this._office = office
     }
+    SetAuthOffice(office) {
+        this._authOffice = office
+    }
     SetSelectedOffice(office) {
+        this.SetPage(1)
         this._SelectedOffice = office
     }
     SetSelectedModalOffice(office) {
@@ -50,6 +71,10 @@ export default class Park {
     get office() {
         return this._office
     }
+    get authOffice() {
+        return this._authOffice
+    }
+
     get SelectedOffice() {
         return this._SelectedOffice
     }
@@ -58,6 +83,7 @@ export default class Park {
         this._place = place
     }
     SetSelectedPlace(place) {
+        this.SetPage(1)
         this._SelectedPlace = place
     }
     SetSelectedModalPlace(place) {
@@ -92,6 +118,7 @@ export default class Park {
         this._Subtype = Subtype
     }
     SetSelectedSubtype(Subtype) {
+        this.SetPage(1)
         this._SelectedSubtype = Subtype
     }
     get Subtype() {
@@ -106,52 +133,90 @@ export default class Park {
         this._Items = Items
     }
     SetSelectedItems (Items) {
-        this._SelectedItem = Items
+        this._SelectedItems = Items
     }
     get Items() {
         return this._Items
     }
+    setSearch (Filter) {
+        this._filter = Filter
+    }
+    get Search () {
+        return this._filter
+    }
     get SelectedItems() {
         return this._SelectedItems
     }
-    //Для страницы-----------------------------------------------------------------------------
+    //Для пагинации-----------------------------------------------------------------------------
     SetPage(page) {
         this._page = page
     }
-    SetSelectedPage(page) {
-        this._SelectedPage = page
+    SetTotalCount(totalCount) {
+        this._totalCountItems = totalCount
     }
-    get page() {
+
+    get Limit () {
+        return this._limitItems
+    }
+    get Page() {
         return this._page
     }
-    get SelectedPage() {
-        return this._SelectedPage
-    }
-    //Для totalCount-----------------------------------------------------------------------------
-    SetTotalCount(totalCount) {
-        this._totalCount = totalCount
-    }
-    SetSelectedTotalCount(totalCount) {
-        this._SelectedTotalCount = totalCount
-    }
     get totalCount() {
-        return this._totalCount
+        return this._totalCountItems
     }
-    get SelectedTotalCount() {
-        return this._SelectedTotalCount
+    //Пагинация для истории----------------------------------------------------------------------------
+    SetPageHistory(pageHistory) {
+        this._pageHistory = pageHistory
     }
-    //Для limit--------------------------------------------------------------------------------------------------
-    SetLimit(limit) {
-        this._limit = limit
+
+    SetTotalCountHistory(totalCountHistory) {
+        this._totalCountHistory = totalCountHistory
     }
-    SetSelectedLimit(limit) {
-        this._SelectedLimit = limit
+
+    get LimitHistory () {
+        return this._limitHistory
     }
-    get limit() {
-        return this._limit
+    get PageHistory() {
+        return this._pageHistory
     }
-    get SelectedLimit() {
-        return this._SelectedLimit
+    get totalCountHistory() {
+        return this._totalCountHistory
+    }
+
+    SetPageHistoryModal(page) {
+        this._pageHistoryModal = page
+    }
+
+    SetTotalCountHistoryModal(totalCountHistory) {
+        this._totalCountHistoryModal = totalCountHistory
+    }
+
+    get LimitHistoryModal () {
+        return this._limitHistoryModal
+    }
+    get PageHistoryModal() {
+        return this._pageHistoryModal
+    }
+    get totalCountHistoryModal() {
+        return this._totalCountHistoryModal
+    }
+
+//Пагинация для сообщений------------------------------------------------------------------------------------------
+    SetPageMessage(page) {
+        this._pageMessage = page
+    }
+    SetTotalCountMessage(totalCount) {
+        this._totalCountMessage = totalCount
+    }
+
+    get LimitMessage () {
+        return this._limitMessage
+    }
+    get PageMessage() {
+        return this._pageMessage
+    }
+    get totalCountMessage() {
+        return this._totalCountMessage
     }
 //Для редактирования---------------------------------------------------------------------------------------------
     SetEdit(edit) {
@@ -186,11 +251,16 @@ export default class Park {
     get History() {
         return this._history
     }
+    SetHistoryModal(History) {
+        this._history = History
+    }
+    get HistoryModal() {
+        return this._history
+    }
     //Перемещение предметов между офисами--------------------------------------------------------------
     SetReplaceItems(boolean) {
         this._replaceItems = boolean
     }
-
     get replaceItems () {
         return this._replaceItems
     }
@@ -200,5 +270,12 @@ export default class Park {
     }
     get Count () {
         return this._Count
+    }
+    //загрузка--------------------------------------------------------------------------------------------
+    setLoad(boolean) {
+        this._load = boolean
+    }
+    get Load() {
+        return this._load
     }
 }

@@ -1,243 +1,103 @@
 //Создаем для роута свой контроллер, конкретно для pcRouter
 
-const path = require('path')
-const uuid = require('uuid')
-const Decode = require('jwt-decode')
-const itemDto = require('../dtos/itemDtos')
-const userDto = require('../dtos/userDtos')
+const itemService = require('../service/itemService')
 //Импортируем модель офиса
-const {item, place, type} = require('../models/models')
-const {history} = require('../models/models')
-
-//Импортируем ApiError
-const ApiError = require('../error/apiError')
+const {item} = require('../models/models')
+const dtoService = require("../service/dtoService");
+const ApiError = require("../error/apiError");
 
 //создаем класс функций для создания, получения и редактирования записей бд в таблице ноутов
 class itemController {
     async create (req, res, next) {
         try {
-            const User = Decode(req.headers.authorization)
             const {name, serial, inventory, manage, cpu, ram, placeId, subtypeId, officeId} = req.body
-            if(!name && !serial && !inventory && !placeId && !subtypeId && !officeId) {
-                throw ApiError.noContent('Empty Data')
+            if(placeId === 'undefined' || subtypeId === 'undefined' || officeId === 'undefined') {
+                throw ApiError.noContent('Выбери офис, место и тип техники')
             }
-            const ItemData = await item.create({name, serial, inventory, manage, cpu, ram , placeId, subtypeId, officeId})
-            const ItemDto = new itemDto(ItemData)
-            const UserDto = new userDto(User)
-            const historyData = await history.create({action: 'create', manage: ItemDto.manage, office: ItemDto.officeId , place: ItemDto.placeId, itemId: ItemDto.id, userId: UserDto.id})
-            return res.json({ItemData, historyData})
+            if (!name || !serial || !inventory) {
+                throw ApiError.noContent('Заполни обязательные поля')
+            }
+            const User = await dtoService.User(req.headers.authorization)
+            const createItem = await itemService.create(name, serial, inventory, manage, cpu, ram, placeId, subtypeId, officeId, User)
+            return res.json({status: 200, message: 'Добавлено'})
         }
         catch (e) {
-            next(ApiError.badRequest(e.message))
             return res.json(e)
         }
     }
     async get (req, res, next) {
         try {
-            const User = Decode(req.headers.authorization)
-            const UserDto = new userDto(User)
-            const {officeId, placeId, subtypeId} = req.query
-            let Item
-
-            if (UserDto.role === 'superuser') {
-
-                if(!officeId && !placeId && !subtypeId) {
-                    //То выводим все предметы
-                    Item = await item.findAll()
-                }
-                //Проверяем условие если и placeId и subtypeId не существуют т.е. равно NULL, а officeId имеет какое-либо значение
-                if(officeId && !placeId && !subtypeId) {
-                    //То выводим записи ноуты со всеми совпадающими значениями officeId
-                    Item = await item.findAll({where: {officeId}})
-                }
-                //Проверяем условие если и officeId не существуют т.е. равно NULL, а placeId имеет какое-либо значение
-                if(!officeId && placeId && !subtypeId) {
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId
-                    Item = await item.findAll({where:{placeId}})
-                }
-                //Проверяем условие если и officeId и placeId не имеет какое-либо значение
-                if(!officeId && !placeId && subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{subtypeId}})
-
-                }
-                if(!officeId && placeId && subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{placeId, subtypeId}})
-
-                }
-                if(officeId && !placeId && subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{officeId, subtypeId}})
-
-                }
-                if(officeId && placeId && !subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{officeId, placeId}})
-
-                }
-
-                if(officeId && placeId && subtypeId) {
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{officeId, placeId, subtypeId}})
-                }
-            } else {
-                //Проверяем условие если officeId  и placeId не существуют т.е. равно NULL
-                if(!officeId && !placeId && !subtypeId) {
-                    //То выводим все ноуты
-                    Item = await item.findAll({where: {officeId: UserDto.role}})
-                }
-
-                //Проверяем условие если и placeId не существуют т.е. равно NULL, а officeId имеет какое-либо значение
-                if(officeId && !placeId && !subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями officeId
-                    Item = await item.findAll({where: {officeId: UserDto.role}})
-
-                }
-                //Проверяем условие если и officeId не существуют т.е. равно NULL, а placeId имеет какое-либо значение
-                if(!officeId && placeId && !subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId
-                    Item = await item.findAll({where:{placeId:placeId, officeId: UserDto.role}})
-
-                }
-
-                //Проверяем условие если и officeId и placeId имеет какое-либо значение
-                if(!officeId && !placeId && subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{subtypeId: subtypeId, officeId: UserDto.role}})
-
-                }
-                if(!officeId && placeId && subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{placeId: placeId, subtypeId: subtypeId, officeId: UserDto.role}})
-
-                }
-                if(officeId && !placeId && subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{officeId: UserDto.role, subtypeId: subtypeId}})
-
-                }
-                if(officeId && placeId && !subtypeId) {
-
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{officeId: UserDto.role, placeId: placeId}})
-
-                }
-
-                if(officeId && placeId && subtypeId) {
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
-                    Item = await item.findAll({where:{officeId: UserDto.role, placeId, subtypeId}})
-                }
-            }
-            return res.json(Item)
+            let {officeId, placeId, subtypeId, limit, page, search} = req.query
+            page = page || 1
+            limit = limit || 20
+            let offset = page * limit - limit
+            const User = await dtoService.User(req.headers.authorization)
+            const getItems = await itemService.get(officeId, placeId, subtypeId, User, limit, offset, search)
+            return res.json(getItems)
         } catch (e) {
-            next(ApiError.badRequest(e.message))
             return res.json(e)
         }
     }
-    async update (req, res) {
+    async update (req, res, next) {
         try {
             const {id, placeId, manage} = req.body
-            if(!id && !placeId && !manage){
-                    throw ApiError.noContent('Empty Data')
+            if(!placeId && !manage){
+                throw ApiError.noContent('Нужно внести хоть какие-то изменения')
             }
-            const User = Decode(req.headers.authorization)
-            let Item;
-            if (id && placeId && manage) {
-                const UserDto = new userDto(User)
-                Item = await item.update({manage: manage, placeId: placeId},{where: { id : id }})
-                const Place = await place.findByPk(placeId)
-                const historyData = await history.create({action: 'Перемещен', manage: manage, place: Place.dataValues.name, itemId: id, userId: UserDto.id})
-                return res.json({Item, historyData})
-            }
-            if (id && !placeId && manage) {
-                Item = await item.update({manage: manage},{where: { id : id }})
-                const UserDto = new userDto(User)
-                const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, itemId: id, userId: UserDto.id})
-                return res.json({Item, historyData})
-            }
-            if (id && placeId && !manage) {
-                Item = await item.update({placeId: placeId,manage: manage},{where: { id : id }})
-                const UserDto = new userDto(User)
-                const Place = await place.findByPk(placeId)
-                const historyData = await history.create({action: 'Перемещен', manage: manage, place: Place.dataValues.name, office:officeId, itemId: id, userId: UserDto.id})
-                return res.json({Item, historyData})
-            }
-            if (id && !placeId && !manage) {
-                Item = await item.update({placeId: placeId, manage: manage},{where: { id : id }})
-                const UserDto = new userDto(User)
-                const historyData = await history.create({action: 'Перемещен', manage: manage, place: placeId, itemId: id, userId: UserDto.id})
-                return res.json({Item, historyData})
-            }
-
+            const User = await dtoService.User(req.headers.authorization)
+            console.log(User)
+            const UpdateItem = await itemService.update(id, placeId, manage, User)
+            return res.json({status: 200, message: 'Изменили!'})
         } catch (e) {
             return res.json(e)
         }
     }
-    async replaceOffice (req, res) {
+    async replaceOffice (req, res, next) {
         try {
             const {id,officeId, placeId} = req.body
+            if(!id) {
+                throw ApiError.noContent('Выбери предметы для переноса')
+            }
+            if(officeId === 'undefined' || placeId === 'undefined') {
+                throw ApiError.noContent('Выбери новый офис и место в офисе')
+            }
+            if(!req.files) {
+                throw ApiError.noContent('Загрузи акт')
+            }
             const {img} =  req.files
-            if(!id && !officeId && !placeId && !img) {
-                throw ApiError.noContent('Empty Data')
-            }
-            const idItems = id.split(',')
-            const User = Decode(req.headers.authorization)
-            const UserDto = new userDto(User)
-            const fileName="Act_" + new Date().toJSON().slice(0,10)+".jpg"
-            img.mv(path.resolve(__dirname, '..', 'act', fileName))
-            let Item
-            let historyData
-            for (let i = 0; i < idItems.length; i++) {
-                Item = await item.update({officeId: officeId, placeId: placeId},{where: { id : idItems[i]}})
-                historyData = await history.create({action: 'Перемещен', place: placeId, office: officeId, itemId: idItems[i], userId: UserDto.id, img: fileName})
-            }
-            const data = 'Переместили'
-            return res.json(data)
+            const User = await dtoService.User(req.headers.authorization)
+            const ReplaceItem = await itemService.replaceItem(id, officeId, placeId, img, User)
+            return res.json({status: 200, message: 'Предметы перемещены'})
         } catch (e) {
             return res.json(e)
         }
     }
-    async status (req, res) {
+    async status (req, res, next) {
         try {
             const {id, placeStatus} = req.body
-            if(!id && !placeStatus) {
-                throw ApiError.noContent('Empty Data')
+            if(!id || !placeStatus) {
+                throw ApiError.noContent('Не получен id и placeStatus')
             }
             const Item = await item.update({placeStatus: placeStatus},{where: {id:id}})
-            return res.json(Item)
+            return res.json({status: 200, message: 'Изменили'})
         } catch (e) {
             return res.json(e)
         }
-
     }
-    async giveItem (req, res) {
+    async giveItem (req, res, next) {
         try {
             const {id,name} = req.body
-            const {img} =  req.files
-            if(!id && !name && !img) {
-                throw ApiError.noContent('Empty Data')
+            if(!id || !name || !req.files) {
+                throw ApiError.noContent('Введи имя менеджера и загрузи акт')
             }
-            const User = Decode(req.headers.authorization)
-            const UserDto = new userDto(User)
-            const fileName="Act_" + new Date().toJSON().slice(0,10)+".jpg"
-            img.mv(path.resolve(__dirname, '..', 'act', fileName))
-            const Item = await item.update({manage: name, placeStatus: 2},{where: { id : id}})
-            const historyData = await history.create({action: 'Выдан на руки', manage: name, itemId: id, userId: UserDto.id, img: fileName})
-            return res.json('Выдано')
+            const {img} =  req.files
+
+            const User = await dtoService.User(req.headers.authorization)
+            const GiveItem = await itemService.give(id, name, img, User)
+            return res.json({status: 200, message: 'Предмет выдан на руки'})
         } catch (e) {
             return res.json(e)
         }
-
     }
 }
 

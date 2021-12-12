@@ -1,30 +1,26 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button, FormControl, Modal, Form} from "react-bootstrap";
-import {createOffice} from "../../http/parkAPI";
-import {toast, ToastContainer} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import {createOffice, fetchAuthOffice, fetchPublicOffice} from "../../http/parkAPI";
+import {Context} from "../../index";
+import {sendData} from "../../utils/sendData";
 
 const ModalAddOffice = ({show, onHide}) => {
+    const {park} = useContext(Context)
     const [value, setValue] = useState( '')
 
     const addOffice = () => {
-        if(!value) {
-            toast.error('Введи имя', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        } else {
-            createOffice({name: value}).then(data => {
-                setValue('')
-                onHide()
-            })
-        }
+        const setLoading = () => {park.setLoad(true)}
+        const timerId = setInterval(setLoading, 200)
+
+        createOffice({name: value}).then((r) => {
+                if(r) {
+                    fetchAuthOffice().then(data => park.SetAuthOffice(data))
+                    fetchPublicOffice().then(data => park.SetOffice(data))
+                    setValue('')
+                }
+            clearInterval(timerId)
+            park.setLoad(false)
+        })
     }
 
     return (
@@ -40,18 +36,25 @@ const ModalAddOffice = ({show, onHide}) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
+                <Form
+                    onSubmit={event => event.preventDefault()}
+                    onKeyUp={(e) => sendData(e, addOffice)}
+                >
                     <FormControl
                         value={value}
-                        onChange={e => setValue(e.target.value)}
+                        onKeyUp={(e) => e.preventDefault()}
+                        onChange={(e) => setValue(e.target.value)
+                        }
                         placeholder='Введите название нового офиса'
                     />
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant='outline-success' onClick={addOffice}>Добавить</Button>
+                <Button
+                    variant='outline-success'
+                    onClick={addOffice}
+                >Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
-                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

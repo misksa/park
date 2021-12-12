@@ -1,45 +1,33 @@
 import React, {useContext, useState} from 'react';
 import {Button, FormControl, Modal, Form, Dropdown} from "react-bootstrap";
 import {Context} from "../../index";
-import {createPlace} from "../../http/parkAPI";
+import {createPlace, fetchPlace} from "../../http/parkAPI";
 import {observer} from "mobx-react-lite";
-import {toast, ToastContainer} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import {sendData} from "../../utils/sendData";
+import DropdownOffice from "../Dropdown/DropdownOffice";
 
 const ModalAddPlace = observer(({show, onHide}) => {
     const [name, setName] = useState( '')
 
     const {park} = useContext(Context)
     const addPlace = () => {
-        if(!park.SelectedOffice.id){
-            toast.error('Выбери офис', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }else{
-            if(!name){
-                toast.error('Введи имя', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            } else {
-                createPlace({name: name, officeId: park.SelectedOffice.id}).then(data => onHide())
-                park.SetSelectedOffice('')
+        const setLoading = () => {park.setLoad(true)}
+        const timerId = setInterval(setLoading, 200)
+        const formData = new FormData()
+        formData.append('name', name)
+        formData.append('officeId', park.SelectedOffice.id)
+        createPlace(formData).then((r)=>{
+            if(r) {
+                fetchPlace().then(data => {
+                    park.SetPlace(data)
+                    park.SetSelectedOffice('')
+                })
             }
-        }
+            clearInterval(timerId)
+            park.setLoad(false)
+        })
     }
-    const dropStatePark = () => {
+    const close = () => {
         park.SetSelectedOffice('')
     }
     return (
@@ -48,7 +36,7 @@ const ModalAddPlace = observer(({show, onHide}) => {
             onHide={onHide}
             size="lg"
             centered
-            onExit={dropStatePark}
+            onExit={close}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -56,21 +44,11 @@ const ModalAddPlace = observer(({show, onHide}) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
-                    <Dropdown>
-                        <Dropdown.Toggle variant={"secondary"}>{park.SelectedOffice.name || 'Выберите офис'}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                        {park.office.map(office =>
-                                <Dropdown.Item
-                                    key={office.id}
-                                    onClick={() => park.SetSelectedOffice(office)}
-                                >
-                                    {office.name}</Dropdown.Item>
-
-                            )}
-                        </Dropdown.Menu>
-
-                    </Dropdown>
+                <Form
+                    onSubmit={event => event.preventDefault()}
+                    onKeyUp={(e) => sendData(e, addPlace)}
+                >
+                <DropdownOffice title={'Выбрать офис'}/>
                     <FormControl
                         value={name}
                         onChange={e => setName(e.target.value)}
@@ -82,7 +60,6 @@ const ModalAddPlace = observer(({show, onHide}) => {
             <Modal.Footer>
                 <Button variant='outline-success' onClick={addPlace}>Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
-                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

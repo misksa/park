@@ -15,6 +15,7 @@ const historyRouter = require('./historyRouter')
 const itemRouter = require('./itemRouter')
 const subtypeRoute = require('./subtypeRouter')
 const typeRouter = require('./typeRouter')
+const countRouter = require('./countRouter')
 
 //Сопостовляем маршруты с соответствующими созданными роутами
 router.use('/user', userRouter)
@@ -25,6 +26,7 @@ router.use('/item', itemRouter)
 router.use('/history', historyRouter)
 router.use('/subtype', subtypeRoute)
 router.use('/type', typeRouter)
+router.use('/count', countRouter)
 
 
 

@@ -3,39 +3,26 @@ const ApiError = require('../error/apiError')
 const tokenService = require('./tokenService')
 const bcrypt = require('bcrypt')
 const userDto = require('../dtos/userDtos')
+const {handleError} = require("pg/lib/native/query");
 class userService {
-    async registration (login, password, role, username) {
-
-        try {
-            //Проверяем если логин или пароль пустой
-            if(!login || !password || !username) {
-                //Выводим сообщение об ошибке
-                return (ApiError.badRequest('Заполни все данные'))
-            }
-
+    async registration (login, password, username) {
             //Создаем переменную где ищем в базе пользователя с введенным логином
             const candidate = await user.findOne({where: {login}})
 
             //если нашли
             if (candidate) {
                 //Выводим ошибку что пользователь с таким логином уже создан
-                return (ApiError.badRequest(`Пользователь с логином ${login} уже создан`))
+                throw ApiError.badRequest(`Пользователь с логином ${login} уже создан`)
             }
 
             //Если 2 условия выше не сработали хэшируем пароль
             const hashPassword = await bcrypt.hash(password, 7)
 
             //Создаем пользователя
-            const User = await user.create({login, password: hashPassword, role, username})
+            const User = await user.create({login, password: hashPassword, role: 'admin', username})
 
             return User
-
-        } catch (e) {
-            console.log(e)
-        }
-
     }
-
     async login(login, password) {
         if(!login || !password) {
             throw ApiError.noContent('Логин и пароль не может быть пустым')
@@ -49,7 +36,7 @@ class userService {
             throw ApiError.badRequest('Неверно введен логин или пароль')
         }
         const UserDto = new userDto(User)
-        const tokens = await tokenService.generateToken({...UserDto})
+        const tokens =  tokenService.generateToken({...UserDto})
         await tokenService.saveToken(UserDto.id, tokens.refreshToken)
         return {...tokens, User: UserDto}
     }

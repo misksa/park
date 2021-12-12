@@ -1,0 +1,15 @@
+
+.ModalSpanName {
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+.ModalSpanItems {
+    font-size: 1.1em;
+    color: grey;
+    font-family: cursive;
+}
+
+.modalHr {
+    margin-top: 5px;
+}

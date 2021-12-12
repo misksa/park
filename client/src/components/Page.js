@@ -2,20 +2,18 @@ import React, {useContext} from 'react';
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {Pagination} from "react-bootstrap";
+import {getPageCount, getPagesArray} from "../utils/pages";
 
-const Pages = observer(() => {
+const Page = observer(() => {
     const {park} = useContext(Context)
-    const pageCount = Math.ceil(park.totalCount / park.limit)
-    const pages = []
-    for (let i = 0; i < pageCount; i ++) {
-        pages.push(i + 1)
-    }
+    const totalCount = getPageCount(park.totalCount, park.Limit)
+    const pages = getPagesArray(totalCount)
     return (
         <Pagination className={'mt-5'}>
             {pages.map(page =>
                 <Pagination.Item
                     key={page}
-                    active={park.page === page}
+                    active={park.Page === page}
                     onClick={() =>park.SetPage(page)}
                 >{page}</Pagination.Item>
             )}
@@ -23,4 +21,4 @@ const Pages = observer(() => {
     );
 });
 
-export default Pages;
+export default Page;

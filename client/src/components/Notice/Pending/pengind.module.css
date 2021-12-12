@@ -1,0 +1,26 @@
+.div{
+    display: block;
+    box-shadow: 1px 1px 5px 1px rgba(0,0,0, 0.3);
+    border-radius: 3px;
+    position: absolute;
+    top: 10%;
+    right: 1%;
+    height: 7.5%;
+    width: 16%;
+    background-color: white;
+    z-index: 9999;
+}
+
+.content {
+    margin-top: 6%;
+}
+
+.text {
+ margin-left: 5%;
+ color: grey;
+ font-size: 1.1em;
+}
+
+.spinner {
+margin-left: 5%;
+}

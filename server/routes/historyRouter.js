@@ -14,6 +14,8 @@ const historyController = require('../controllers/historyController')
 // Получение сообщений об изменении
 router.get('/', authMiddleware, historyController.get)
 
+router.get('/getOne', authMiddleware, historyController.getOne)
+
 
 //экспортируем роутер из файла
 module.exports = router

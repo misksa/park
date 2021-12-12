@@ -3,34 +3,38 @@
 const ApiError = require('../error/apiError')
 
 const {Message} = require('../models/models')
-const userDto = require('../dtos/userDtos')
-const Decode = require('jwt-decode')
+const dtoService = require("../service/dtoService");
+const messageService = require('../service/messageService')
 
 
 
 class messageController {
     async send (req, res, next) {
         try {
-            let {remark, itemId} = req.body
-            if(!remark && !itemId) {
-                throw ApiError.noContent('Empty Data')
+            const {remark, itemId} = req.body
+            if(!remark || !itemId) {
+                return res.json({status: 204, message: 'Нет данных о сообщении и пользователе'})
             }
-            const User = Decode(req.headers.authorization)
-            const UserDto = new userDto(User)
-            const sendMessage = await Message.create({remark: remark, userId: UserDto.id, itemId: itemId})
-            const getMessage = await Message.findAll()
-            return res.json(getMessage)
+            const User = await dtoService.User(req.headers.authorization)
+            const sendMessage = await messageService.Send(remark, itemId, User)
+            return res.json({status: 200, message: 'Отправлено'})
         }
         catch (e) {
-            next(ApiError.badRequest(e.message))
-            console.log(e)
-
+            return res.json(e.message)
         }
     }
-    async get (req, res) {
-        let getMessage
-        getMessage = await Message.findAll()
-        return res.json(getMessage)
+    async get (req, res, next) {
+        try {
+            const getMessage = await Message.findAll({
+                order: [
+                    ['id', 'DESC']
+                ]
+            })
+            return res.json(getMessage)
+        } catch (e) {
+            console.log(e)
+            return res.json(e.message)
+        }
     }
 
 }

@@ -1,33 +1,30 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button, FormControl, Modal, Form} from "react-bootstrap";
-import {createType} from "../../http/parkAPI";
+import {createType, fetchType} from "../../http/parkAPI";
 import {observer} from "mobx-react-lite";
-import {toast, ToastContainer} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import {Context} from "../../index";
+import {sendData} from "../../utils/sendData";
 
 
 
 const ModalAddType = observer(({show, onHide}) => {
     const [name, setName] = useState( '')
-    const addType = () => {
-        if(!name){
-            toast.error('Напиши название', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }else{
-            const formData = new FormData()
-            formData.append('name', name)
-            createType(formData).then(data => onHide())
-            setName('')
-        }
-    }
+    const {park} = useContext(Context)
+    const addType = async () => {
+        const setLoading = () => {park.setLoad(true)}
+        const timerId = setInterval(setLoading, 200)
 
+        const formData = new FormData()
+        formData.append('name', name)
+        createType(formData).then((r) => {
+            if(r) {
+                fetchType().then(data => park.SetTypeItem(data))
+                setName('')
+            }
+            clearInterval(timerId)
+            park.setLoad(false)
+        })
+    }
     return (
         <Modal
             show={show}
@@ -41,7 +38,10 @@ const ModalAddType = observer(({show, onHide}) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
+                <Form
+                    onSubmit={event => event.preventDefault()}
+                    onKeyUp={(e) => sendData(e, addType)}
+                >
                     <FormControl
                         value={name}
                         onChange={e => setName(e.target.value)}
@@ -53,7 +53,6 @@ const ModalAddType = observer(({show, onHide}) => {
             <Modal.Footer>
                 <Button variant='outline-success' onClick={addType}>Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
-                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

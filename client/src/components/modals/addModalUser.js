@@ -1,63 +1,37 @@
 import React, {useContext, useState} from 'react';
-import {Button, FormControl, Modal, Form, Dropdown} from "react-bootstrap";
-import {registration} from "../../http/userAPI";
+import {Button, FormControl, Modal, Form} from "react-bootstrap";
+import {fetchUser, registration} from "../../http/userAPI";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
-import {toast, ToastContainer} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import {chooseAccess} from "../../utils/chooseAccess";
+import {sendData} from "../../utils/sendData";
 
 const ModalAddUser = observer(({show, onHide}) => {
     const [username, setUsername] = useState( '')
     const [login, setLogin] = useState( '')
+    const [access, setAccess] = useState([])
     const [password, setPassword] = useState( '')
     const {park} = useContext(Context)
+    const {user} = useContext(Context)
 
-    const addUser = () => {
-        if(!username) {
-            toast.error('Введи имя и фамилию', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }else {
-            if(!login) {
-                toast.error('Введи логин', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            } else{
-                if(!password) {
-                    toast.error('Введи пароль', {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: true,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                } else {
-                    const formData = new FormData()
-                    formData.append('login', login)
-                    formData.append('password', password)
-                    formData.append('role', park.SelectedOffice.id)
-                    formData.append('username', username)
-                    registration(formData).then(data => onHide())
-                    park.SetSelectedOffice('')
-                }
+    const addUser = async () => {
+        const setLoading = () => {park.setLoad(true)}
+        const timerId = setInterval(setLoading, 200)
+        const formData = new FormData()
+        formData.append('login', login)
+        formData.append('password', password)
+        formData.append('officeId', access)
+        formData.append('username', username)
+        registration(formData).then((r) => {
+            if(r) {
+                fetchUser().then(data => user.SetClient(data))
+                park.SetSelectedOffice('')
             }
-        }
+            clearInterval(timerId)
+            park.setLoad(false)
+        })
     }
+
     const dropStatePark = () => {
         park.SetSelectedOffice('')
     }
@@ -75,7 +49,10 @@ const ModalAddUser = observer(({show, onHide}) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
+                <Form
+                    onSubmit={event => event.preventDefault()}
+                    onKeyUp={(e) => sendData(e, addUser)}
+                >
                     <FormControl
                             className={'mt-1'}
 
@@ -97,27 +74,28 @@ const ModalAddUser = observer(({show, onHide}) => {
                         onChange={e => setPassword(e.target.value)}
                         placeholder='Пароль'
                     />
-                    <Dropdown
-                        className={'mt-1'}
-                    >
-                        <Dropdown.Toggle variant={"secondary"}>{park.SelectedOffice.name || 'Выбрать роль'}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {park.office.map(office =>
-                                <Dropdown.Item
-                                    key={office.id}
-                                    onClick={() => park.SetSelectedOffice(office)}
-                                >
-                                    {office.name}</Dropdown.Item>
-                            )}
-                            <Dropdown.Item>SuperUser</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <h4>Доступ к офисам: </h4>
+                    {park.office.map(office =>
+                        <div
+                            key={office.id}
+                            className={'d-inline'}
+                        >
+                        <span
+                            className={'ml-2'}
+                        >
+                            {office.name}</span>
+                            <input
+                                type={'checkbox'}
+                                value={office.id}
+                                onChange={(e)=> chooseAccess(e, setAccess, access)}
+                            />
+                        </div>
+                    )}
                 </Form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant='outline-success' onClick={addUser}>Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
-                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

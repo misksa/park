@@ -24,17 +24,23 @@ router.post('/registration',
 router.post('/login', userController.login)
 
 //Эндпоинт для логаута
-router.post('/logout', authMiddleware, userController.logout)
+router.post('/logout',
+    // authMiddleware,
+    userController.logout)
 
 //эндпоинт для удаления пользователя
-router.post('/delete', checkRoleMiddleware('superuser'), userController.delete)
+router.post('/delete',
+    checkRoleMiddleware('superuser'),
+    userController.delete)
 
 
 //Эндпоинт для получения новой пары access и refresh token
 router.get ('/refresh',  userController.refresh)
 
 //Метот get для проверки авторизован пользователь или нет, второй параметр middleware проверки авторизации, третий параметр функция проверки авторизации
-router.get ('/', authMiddleware, userController.get)
+router.get ('/',
+    authMiddleware,
+    userController.get)
 
 //экспортируем роутер из файла
 module.exports = router

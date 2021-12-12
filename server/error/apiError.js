@@ -1,7 +1,7 @@
 /* Создем универсальные ошибки для сервера*/
 
 //Создаем класс с функиями, extends Error означает что apiError будет дочерним классом для Error
-class ApiError extends Error{
+class ApiError extends Error {
     errors;
     status;
     //Создаем конструктор, (это метод, служащий для создания и инициализации объектов, созданных с использованием class)
@@ -20,6 +20,9 @@ class ApiError extends Error{
 
     //Функция badRequest не верный запрос
     static badRequest(message) {
+        return new ApiError(404, message)
+    }
+    static badAuthorized(message) {
         return new ApiError(404, message)
     }
     //Функция не авторизован

@@ -16,15 +16,15 @@ const BadgeStatusPlace = observer(({Items}) => {
     }
     let placeholder
     let color
-    if(Items.placeStatus == 1) {
+    if(Items.placeStatus === 1) {
         placeholder = 'На месте'
         color = 'success'
     }
-    if(Items.placeStatus == 2) {
+    if(Items.placeStatus === 2) {
         placeholder = 'Выдан на руки'
         color = 'warning'
     }
-    if(Items.placeStatus == 3) {
+    if(Items.placeStatus === 3) {
         placeholder = 'Не найден'
         color = 'danger'
     }

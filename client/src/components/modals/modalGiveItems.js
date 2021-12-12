@@ -1,36 +1,48 @@
-import React, { useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Modal, Button, FormControl, Form} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
-import {giveItem} from "../../http/parkAPI";
-import {toast, ToastContainer} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import {fetchItem, giveItem} from "../../http/parkAPI";
+import {Context} from "../../index";
+import notice from "../../utils/notice";
+import {sendData} from "../../utils/sendData";
+
 const ModalGiveItems = observer(({ Items, show, onHide }) => {
     const [name, setName] = useState('')
     const [file, setFile] = useState(null)
 
+    const {park} = useContext(Context)
     const giveItems = () => {
-        if (file && name) {
-            const formData = new FormData()
-            formData.append('id', Items.id)
-            formData.append('name', name)
-            formData.append('img', file)
-            giveItem(formData).then(data => onHide()).then(setName(''), setFile(null))
-        } else {
-          toast.error('Укажи имя фамилию сотрудника и загрузи акт приема-передачи', {
-             position: "top-right",
-             autoClose: 5000,
-             hideProgressBar: true,
-             closeOnClick: true,
-             pauseOnHover: true,
-             draggable: true,
-             progress: undefined,
-          })
+        if(file.type.slice('/', 5) !== 'image') {
+            notice.Error('Можно загружать только фото')
+            return
         }
+        const setLoading = () => {park.setLoad(true)}
+        const timerId = setInterval(setLoading, 200)
+        const formData = new FormData()
+        formData.append('id', Items.id)
+        formData.append('name', name)
+        formData.append('img', file)
+        giveItem(formData).then((r)=> {
+            if(r) {
+                fetchItem().then(data => {
+                    park.SetItem(data.rows)
+                    park.SetTotalCount(data.count)
+                    setName('')
+                    setFile(null)
+                })
+            }
+            clearInterval(timerId)
+            park.setLoad(false)
+        })
     }
     const selectFile = e => {
         setFile(e.target.files[0])
     }
     return (
+        <Form
+            onSubmit={event => event.preventDefault()}
+            onKeyUp={(e) => sendData(e, giveItems)}
+        >
         <Modal
             show={show}
             onHide={onHide}
@@ -54,6 +66,7 @@ const ModalGiveItems = observer(({ Items, show, onHide }) => {
                 <Form.Control
                     className={'mt-3'}
                     type="file"
+                    accept={'image/*'}
                     onChange={selectFile}
                 />
             </Modal.Body>
@@ -61,10 +74,8 @@ const ModalGiveItems = observer(({ Items, show, onHide }) => {
                 <Button variant='outline-success' onClick={giveItems}>Принять</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
             </Modal.Footer>
-            <ToastContainer/>
         </Modal>
-
-
+        </Form>
     );
 });
 

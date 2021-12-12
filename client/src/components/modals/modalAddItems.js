@@ -1,10 +1,11 @@
 import React, {useContext, useState} from 'react';
 import {Button, FormControl, Modal, Form, Dropdown, ButtonGroup} from "react-bootstrap";
-import {createItem} from "../../http/parkAPI";
+import {createItem, fetchItem} from "../../http/parkAPI";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
-import 'react-toastify/dist/ReactToastify.css';
-import {toast, ToastContainer} from "react-toastify";
+import {sendData} from "../../utils/sendData";
+import DropdownOffice from "../Dropdown/DropdownOffice";
+import DropdownPlace from "../Dropdown/DropdownPlace";
 
 const ModalAddItems = observer(({show, onHide}) => {
     const {park} = useContext(Context)
@@ -14,86 +15,55 @@ const ModalAddItems = observer(({show, onHide}) => {
     const [manage, setManage] = useState('')
     const [cpu, setCpu] = useState('')
     const [ram, setRam] = useState('')
-    if(park.SelectedPlace.officeId !== park.SelectedOffice.id) {
-        park.SetSelectedPlace('')
-    }
-    const AddItems = () => {
-        if(!park.SelectedOffice.id){
-            toast.error('Выбери офис', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }else{
-            if(!park.SelectedPlace.id){
-                toast.error('Выбери место', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }else {
-                if(!park.SelectedSubtype.id){
-                    toast.error('Выбери подтип', {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: true,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                } else {
-                    if(!name) {
-                        toast.error('Введи название', {
-                            position: "top-right",
-                            autoClose: 5000,
-                            hideProgressBar: true,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                        });
-                    }else{
-                        if(!inventory){
-                            toast.error('Введи инвентарный номер', {
-                                position: "top-right",
-                                autoClose: 5000,
-                                hideProgressBar: true,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                            });
-                        } else {
-                            createItem({name:name, inventory:inventory, serial:serial, manage:manage, cpu:cpu, ram:ram, officeId: park.SelectedOffice.id, placeId:park.SelectedPlace.id, subtypeId: park.SelectedSubtype.id})
-                                .then(data => setName(''), setInventory(''), setSerial(''), setManage(''), setCpu(''), setRam(''), onHide())
-                        }
-                    }
-                }
-            }
-        }
 
+
+
+    const AddItems = () => {
+        const setLoading = () => {park.setLoad(true)}
+        const timerId = setInterval(setLoading, 200)
+        const formData = new FormData()
+        formData.append('name', name)
+        formData.append('inventory', inventory)
+        formData.append('serial', serial)
+        formData.append('manage', manage)
+        formData.append('cpu', cpu)
+        formData.append('ram', ram)
+        formData.append('officeId', park.SelectedOffice.id)
+        formData.append('placeId', park.SelectedPlace.id)
+        formData.append('subtypeId', park.SelectedSubtype.id)
+        createItem(formData).then(r =>{
+           if(r){
+               fetchItem().then(data => {
+                   park.SetItem(data.rows)
+                   park.SetTotalCount(data.count)
+                   park.SetSelectedOffice('')
+                   park.SetSelectedPlace('')
+                   park.SetSelectedSubtype('')
+                   setName('')
+                   setInventory('')
+                   setSerial('')
+                   setManage('')
+                   setCpu('')
+                   setRam('')
+               })
+           }
+            clearInterval(timerId)
+            park.setLoad(false)
+        })
     }
-    const dropStatePark = () => {
+    const close = () => {
         park.SetSelectedOffice('')
         park.SetSelectedPlace('')
+        park.SetHistoryModal('')
     }
+
     return (
         <Modal
             show={show}
             onHide={onHide}
             size="lg"
             centered
-            onExit={dropStatePark}
-
+            onExit={close}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -101,57 +71,12 @@ const ModalAddItems = observer(({show, onHide}) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Dropdown
-                    as={ButtonGroup}
-                        className={'ml-1'}
+                <DropdownOffice title={'Выбрать офис'}/>
+                <DropdownPlace title={'Выбрать место'}/>
+                <Form
+                    onSubmit={event => event.preventDefault()}
+                    onKeyUp={(e) => sendData(e, AddItems)}
                 >
-                    <Dropdown.Toggle variant={"secondary"}>{park.SelectedOffice.name || 'Выберите офис'}</Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {park.office.map(office =>
-                            <Dropdown.Item
-                                key={office.id}
-                                onClick={() => park.SetSelectedOffice(office)}
-                            >
-                                {office.name}</Dropdown.Item>
-
-                        )}
-                    </Dropdown.Menu>
-                </Dropdown>
-
-                <Dropdown
-                    as={ButtonGroup}
-                    className={'ml-1'}
-                >
-                    <Dropdown.Toggle variant={"secondary"}>{park.SelectedPlace.name || 'Выберите место'}</Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {park.place.filter(place => place.officeId === park.SelectedOffice.id).map(place =>
-                            <Dropdown.Item
-                                key={place.id}
-                                onClick={() => park.SetSelectedPlace(place)}
-                            >
-                                {place.name}</Dropdown.Item>
-
-                        )}
-                    </Dropdown.Menu>
-                </Dropdown>
-
-                <Dropdown
-                    as={ButtonGroup}
-                    className={'ml-1'}
-                >
-                        <Dropdown.Toggle variant={"secondary"}>{park.SelectedSubtype.name || 'Выберите тип'}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {park.Subtype.map(Subtype =>
-                                <Dropdown.Item
-                                    key={Subtype.id}
-                                    onClick={() => park.SetSelectedSubtype(Subtype)}
-                                >
-                                    {Subtype.name}</Dropdown.Item>
-
-                            )}
-                        </Dropdown.Menu>
-                </Dropdown>
-                <Form>
                     <FormControl
                         value={name}
                         onChange={e => setName(e.target.value)}
@@ -193,13 +118,12 @@ const ModalAddItems = observer(({show, onHide}) => {
                             />
                         </div>
                             :
-                        <div></div>}
+                        <></>}
                 </Form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant='outline-success' onClick={AddItems}>Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
-                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

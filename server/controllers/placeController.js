@@ -2,39 +2,59 @@
 
 //Импортируем модель офиса
 const {place} = require('../models/models')
+const ApiError = require("../error/apiError");
 
 //Импортируем ApiError
-const ApiError = require('../error/apiError')
 
 //создаем класс функций для создания и получения мест в офисе
 class placeController {
-    async create (req, res) {
-        const {name, officeId} = req.body
-        if(!name && !officeId) {
-            throw ApiError.noContent('Empty Data')
+    async create (req, res, next) {
+        try {
+            const {name, officeId} = req.body
+            if(officeId === 'undefined') {
+                throw ApiError.noContent('Выберите офис')
+            }
+            if(!name) {
+                throw ApiError.noContent('Выберите офис и введите имя')
+            }
+            const Place = await place.create(({name, officeId}))
+            return res.json({status: 200, message: 'Создано'})
+        } catch (e) {
+            return res.json(e)
         }
-        const Place = await place.create(({name, officeId}))
-        return res.json({Place})
     }
-    async get (req, res) {
-        const places = await place.findAll()
-        return res.json(places)
-    }
-    async delete (req, res) {
-        const {placeId} = req.body
-        if(!placeId) {
-            throw ApiError.noContent('Empty Data')
+    async get (req, res, next) {
+        try {
+            const places = await place.findAll()
+            return res.json(places)
+        } catch (e) {
+            return res.json(e)
         }
-        const Place = await place.destroy(({where: {id: placeId}}))
-        return res.json(Place)
     }
-    async edit (req, res) {
-        const {placeId, name} = req.body
-        if(!placeId && !name) {
-            throw ApiError.noContent('Empty Data')
+    async delete (req, res, next) {
+        try {
+            const {placeId} = req.body
+            if(!placeId) {
+                throw ApiError.noContent('Выберите место')
+            }
+            const Place = await place.destroy(({where: {id: placeId}}))
+            return res.json({status: 200, message: 'Удалено'})
+        } catch (e) {
+            return res.json(e)
         }
-        const Place = await place.update({name: name}, {where: {id:placeId}})
-        return res.json(Place)
+
+    }
+    async edit (req, res, next) {
+        try {
+            const {placeId, name} = req.body
+            if(!placeId || !name) {
+                throw ApiError.noContent('Выберите место и введите новое имя')
+            }
+            const Place = await place.update({name: name}, {where: {id:placeId}})
+            return res.json({status: 200, message: 'Изменили!'})
+        } catch (e) {
+            return res.json(e)
+        }
     }
 }
 

@@ -7,11 +7,11 @@ import {observer} from "mobx-react-lite";
 
 const TypeBar = observer(() => {
     const {park} = useContext(Context)
-
     return (
+        <div className={'d-flex'}>
         <Accordion >
             {park.typeItem.map(typeItem =>
-                <Card>
+                <Card key={typeItem.id}>
                     <Card.Header>
                         <Accordion.Toggle
                             as={Button}
@@ -40,7 +40,8 @@ const TypeBar = observer(() => {
                 </Card>
             )}
         </Accordion>
-            )
+        </div>
+    )
 })
 
 export default TypeBar;

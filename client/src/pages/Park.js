@@ -1,64 +1,54 @@
 /*Основная страница приложения, где будет таблица с позициями,
  список офисов и мест в офисе, так же типы позиций */
-import React, {useContext, useEffect} from 'react';
-import Container from "react-bootstrap/Container";
+import React, {useContext, useEffect, useState} from 'react';
 import {Col, Row} from "react-bootstrap";
 import PlaceBar from "../components/PlaceBar";
 import TypeBar from "../components/TypeBar";
-import ParkList from "../components/ParkList";
+import ParkList from "../components/ParkList/ParkList";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
+import {
+    fetchItem
+} from "../http/parkAPI";
+import Search from "../components/Search/Search";
+import Pages from "../components/Page";
 
-import {fetchCount, fetchHistory, fetchItem, fetchOffice, fetchPlace, fetchSubtype, fetchType} from "../http/parkAPI";
-import {fetchUser} from "../http/userAPI";
-import jwt_decode from "jwt-decode";
 const Park = observer(() => {
-
     const {park} = useContext(Context)
-    const {user} = useContext(Context)
 
-    const token = localStorage.getItem('accessToken')
-    user.SetIAm(jwt_decode(token))
-
-    useEffect(()=> {
-        fetchItem().then(data => park.SetItem(data))
-        fetchPlace().then(data => park.SetPlace(data))
-        fetchType().then(data => park.SetTypeItem(data))
-        fetchCount().then(data => park.SetCount(data))
-        fetchOffice().then(data => park.SetOffice(data))
-        fetchSubtype().then(data => park.SetSubtype(data))
-        fetchUser().then(data => user.SetClient(data))
-        fetchHistory().then(data => park.SetHistory(data))
-        fetchItem(null, null,null).then(data => {
-            park.SetItem(data)
-        })
-    }, [])
-
+    const [loadItems, setLoadItems] = useState(false)
 
     useEffect( ()=> {
-        fetchItem(park.SelectedOffice.id, park.SelectedPlace.id, park.SelectedSubtype.id).then(data => {
-            park.SetItem(data)
+        const setLoad = () => setLoadItems(true)
+        const timerId = setInterval(setLoad, 200)
+        fetchItem(park.SelectedOffice.id, park.SelectedPlace.id, park.SelectedSubtype.id, park.Page, park.Limit, park.Search).then(data => {
+            park.SetItem(data.rows)
+            park.SetTotalCount(data.count)
+            clearInterval(timerId)
+            setLoadItems(false)
         })
+    },[park.SelectedOffice, park.SelectedPlace, park.SelectedSubtype, park.Page, park.Search, park])
 
-    },[park.SelectedOffice, park.SelectedPlace, park.SelectedSubtype])
+
     return (
-        <Container fluid>
+        <div className={'container-fluid justify-content-center'} >
+            <Search/>
             <Row className={'mt-3'}>
-                <Col md={"auto"}>
+                <Col sm={'auto'}>
                     <PlaceBar />
                 </Col>
-                <Col md={8} >
-                    <ParkList/>
+                <Col md={0} >
+                    <ParkList loadItems={loadItems} setLoadItems={setLoadItems} />
+                    <Pages/>
                 </Col>
                 <Col
-                    md={"auto"}
+                    sm={1}
                     className={'ml-5'}
                 >
                     <TypeBar />
                 </Col>
             </Row>
-
-        </Container>
+        </div>
     );
 });
 

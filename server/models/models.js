@@ -49,7 +49,6 @@ const item = sequelize.define('item', {
     cpu: {type: DataTypes.STRING, allowNull: true },
     ram: {type: DataTypes.STRING, allowNull: true },
     placeStatus: {type: DataTypes.INTEGER, defaultValue: 1, allowNull: false },
-    check: {type: DataTypes.BOOLEAN, allowNull: true }
 })
 
 const type = sequelize.define('type', {
@@ -67,23 +66,20 @@ const subtype = sequelize.define('subtype', {
 //Модель истории
 const history = sequelize.define('history', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    action: {type: DataTypes.STRING, allowNull: true },
+    action: {type: DataTypes.STRING, allowNull: false },
     manage: {type: DataTypes.STRING, allowNull: true },
-    office: {type: DataTypes.STRING, allowNull: true },
-    place: {type: DataTypes.STRING, allowNull: true },
-    itemId: {type: DataTypes.STRING, allowNull: true },
-    userId: {type: DataTypes.STRING, allowNull: true },
-    img: {type: DataTypes.STRING, allowNull: true}
+    place: {type: DataTypes.STRING, allowNull: true},
+    img: {type: DataTypes.STRING, allowNull: true},
+    nameItem: {type: DataTypes.STRING, allowNull: false},
+    inventory: {type: DataTypes.STRING, allowNull: false}
 
 })
 
+const access = sequelize.define('access', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+})
 /*Описываем связи между таблицами*/
 
-//связь между пользователем и юзером один к одному
-user.hasOne(office)
-
-//сообщаем что офис принадлежит пользователю
-office.belongsTo(user)
 
 //связь между пользователем и сообщениями один ко многим
 user.hasMany(Message)
@@ -115,8 +111,15 @@ subtype.hasMany(item)
 item.belongsTo(subtype)
 
 //Связь между историей и оборудованием
-// item.hasMany(history)
-// history.belongsTo(item)
+item.hasMany(history)
+history.belongsTo(item)
+
+//Связь между историей и офисами
+office.hasMany(history)
+history.belongsTo(office)
+
+user.hasMany(history)
+history.belongsTo(user)
 
 //Связь между заметкой и предметами парка
 item.hasMany(Message)
@@ -126,7 +129,15 @@ Message.belongsTo(item)
 user.hasOne(token)
 token.belongsTo(user)
 
+//Связь между юзерами и доступом
+user.hasOne(access)
+access.belongsTo(user)
+
+//связь между доступ и офисами
+office.hasMany(access)
+access.belongsTo(office)
+
 //Экспортируем модели что бы можно было их использовать в других файлах
 module.exports = {
-    user, Message, office, place, item, history, type, subtype, token
+    user, Message, office, place, item, history, type, subtype, token, access
 }

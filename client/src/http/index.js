@@ -1,5 +1,4 @@
 import axios from "axios";
-import {config} from "dotenv";
 
 
 const $host = axios.create({

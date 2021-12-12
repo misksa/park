@@ -1,21 +1,36 @@
 import {$host} from "./index";
 import axios from "axios";
+import notice from "../utils/notice";
+
+
 
 export const registration = async (User) => {
     const {data} = await $host.post('api/user/registration', User)
-    return {data}
+    if(data.status === 204 || data.status === 404) {
+        notice.Error(data.message)
+        return false
+    } else if( data.status === 200) {
+        notice.Success(data.message)
+    }
+    return data
 }
 
 export const deleteUser = async (id) => {
     const {data} = await $host.post('api/user/delete', id)
-    return {data}
+    if(data.status === 204 || data.status === 404) {
+        notice.Error(data.message)
+        return false
+    } else if( data.status === 200) {
+        notice.Success(data.message)
+    }
+    return data
 }
 
 export const Login = async (login, password) => {
-    const {data} = await $host.post('api/user/login', {login, password})
-    //Добавление токена перенес в файл Login.js
+    const data = await $host.post('api/user/login', {login, password})
+    //Добавление токена в файле Login.js
     // localStorage.setItem('accessToken', data.accessToken)
-    return {data}
+    return data
 }
 
 export const Logout = async () => {
@@ -27,7 +42,6 @@ export const Logout = async () => {
 
 export const refresh = async () => {
         const {data} = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/user/refresh`, {withCredentials: true})
-        console.log(data)
         localStorage.setItem('accessToken', data.accessToken)
         return {data}
 }

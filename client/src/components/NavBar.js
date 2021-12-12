@@ -4,20 +4,17 @@ import {Context} from "../index";
 
 import Navbar from "react-bootstrap/Navbar";
 
-import jwt_decode from "jwt-decode";
-
 import Nav from "react-bootstrap/Nav";
 
 import Button from "react-bootstrap/Button";
-import  checked from "./itemList";
 import {ADMIN_ROUTE, LOGIN_ROUTE, PARK_ROUTE, STATS_ROUTE} from "../utils/consts";
 
 import {observer} from "mobx-react-lite";
 
 import {useHistory} from 'react-router-dom';
 import {Logout} from "../http/userAPI";
-import ModalReplaceItems from "./modals/modalReplaceItems";
-import {set} from "mobx";
+import ModalReplaceItems from "./modals/modalReplaceItem/modalReplaceItems";
+
 
 const NavBar = observer(() => {
     //Получаем UserPark из контекста
@@ -30,15 +27,6 @@ const NavBar = observer(() => {
         user.setIsAuth(false)
         history.push(LOGIN_ROUTE)
     }
-
-    let i = [];
-    i = park.Items.filter(items => items.check === true)
-    const cancelCheckItems = (i) => {
-        for (let z = 0; z < i.length; z++ ) {
-            i[z].check = false
-        }
-    }
-
     const [modalReplaceItems, setModalReplaceItems] = useState(false)
     return (
             <div id={'NavBar'}>
@@ -57,8 +45,8 @@ const NavBar = observer(() => {
                             <Button
                                 variant={'outline-light'}
                                 onClick={() => {
+                                    park.SetSelectedItems([])
                                     park.SetReplaceItems(false)
-                                    cancelCheckItems(i)
                                 }
                                 }
                             >
@@ -72,15 +60,13 @@ const NavBar = observer(() => {
                                 Выбрать предметы
                             </Button>
                         }
-                        {park.replaceItems ?
+                        {park.replaceItems &&
                             <div
                                 style={{color:'white', cursor:'pointer'}}
                                 className={'ml-2'}
                                 onClick={() => setModalReplaceItems(true)}
                             >
-                                Выбрано: {i.length}
-                            </div>:
-                            <div>
+                                Выбрано: {park.SelectedItems.length}
                             </div>
                         }
                         <Nav className="ml-auto">
@@ -88,7 +74,7 @@ const NavBar = observer(() => {
                                 className={'mr-5 mt-2'}
                                 style={{color: 'white'}}
                             >
-                                {user.iAm.username}
+                                {user.User.username}
                             </div>
                             <Button
                                 className={'mr-2'}

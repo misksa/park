@@ -4,11 +4,11 @@ const tokenService = require('../service/tokenService')
 //Создаем и сразу же экспортируем функцию
 module.exports = function (req, res, next) {
 
-    // //Проверяем если метод запроса равен OPTIONS то пропускаем, нас интересуют только put, get, post, delete запросы
+    //Проверяем если метод запроса равен OPTIONS то пропускаем, нас интересуют только put, get, post, delete запросы
     // if (req.method === "OPTIONS") {
     //     next()
-
-    try {
+    // }
+    // try {
         //достаем токен из заголовка авторизации
         const authorizationHeader = req.headers.authorization
         //Проверяем есть ли токен
@@ -27,9 +27,9 @@ module.exports = function (req, res, next) {
         }
         req.user = userData
         next()
-    } catch (e) {
-
-        //Если возникает ошибка выводи сообщение пользователь не авторизован
-        return next(ApiError.unauthorized())
-    }
+    // } catch (e) {
+    //
+    //     //Если возникает ошибка выводи сообщение пользователь не авторизован
+    //     return next(ApiError.unauthorized())
+    // }
 }

@@ -1,0 +1,12 @@
+.container {
+    position: absolute;
+    top: 50%;
+    left: 47%;
+    justify-content: center;
+    display: block;
+}
+
+.content {
+    width: 80px;
+    height: 80px;
+}

@@ -1,0 +1,20 @@
+.container {
+    height: 50px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.form {
+    width: 50%;
+
+}
+
+
+.input{
+    height: 50px;
+    width: 100%;
+    border: 1px solid grey;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}

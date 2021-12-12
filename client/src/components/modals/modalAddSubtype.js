@@ -1,70 +1,51 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Button, FormControl, Modal, Form, Dropdown, FormLabel} from "react-bootstrap";
+import React, {useContext, useState} from 'react';
+import {Button, FormControl, Modal, Form, Dropdown} from "react-bootstrap";
 import {Context} from "../../index";
-import { createSubtype} from "../../http/parkAPI";
+import {createSubtype, fetchSubtype} from "../../http/parkAPI";
 import {observer} from "mobx-react-lite";
-import {toast, ToastContainer} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import {sendData} from "../../utils/sendData";
+import notice from "../../utils/notice";
 
 const ModalAddSubtype = observer(({show, onHide}) => {
     const [name, setName] = useState( '')
     const [file, setFile] = useState(null)
     const {park} = useContext(Context)
     const addSubtype = () => {
-        if(!park.SelectedTypeItem.id) {
-            toast.error('Выбери тип', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }else{
-            if(!name) {
-                toast.error('Введи название подтипа', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }else{
-                if(!file){
-                    toast.error('Загрузи иконку подтипа', {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: true,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                }else{
+        if(file.type.slice('/', 5) !== 'image') {
+            notice.Error('Можно загружать только фото')
+            return
+        }        const setLoading = () => {park.setLoad(true)}
+        const timerId = setInterval(setLoading, 200)
                     const formData = new FormData()
                     formData.append('name', name)
                     formData.append('typeId', park.SelectedTypeItem.id)
                     formData.append('img', file)
-                    createSubtype(formData).then(data => onHide(), park.SetSelectedTypeItem(''))
-                }
-            }
-        }
-
+                    createSubtype(formData).then((r)=>{
+                        if(r) {
+                            fetchSubtype().then(data => {
+                                park.SetSubtype(data)
+                                park.SetSelectedTypeItem('')
+                                setName('')
+                                setFile(null)
+                            })
+                        }
+                        clearInterval(timerId)
+                        park.setLoad(false)
+                    })
     }
     const selectFile = e => {
         setFile(e.target.files[0])
     }
-
+    const close = () => {
+        park.SetSelectedTypeItem('')
+    }
     return (
         <Modal
             show={show}
             onHide={onHide}
             size="lg"
             centered
+            onExit={close}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -72,7 +53,10 @@ const ModalAddSubtype = observer(({show, onHide}) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
+                <Form
+                    onSubmit={event => event.preventDefault()}
+                    onKeyUp={(e) => sendData(e, addSubtype)}
+                >
                     <Dropdown>
                         <Dropdown.Toggle variant={"secondary"}>{park.SelectedTypeItem.name || 'Выберите тип техники'}</Dropdown.Toggle>
                         <Dropdown.Menu>
@@ -98,6 +82,7 @@ const ModalAddSubtype = observer(({show, onHide}) => {
                         <Form.Label>Выберите икнонку для подтипа</Form.Label>
                         <Form.Control
                             type="file"
+                            accept={'image/*'}
                             onChange={selectFile}
                         />
                     </Form.Group>
@@ -106,7 +91,6 @@ const ModalAddSubtype = observer(({show, onHide}) => {
             <Modal.Footer>
                 <Button variant='outline-success' onClick={addSubtype}>Добавить</Button>
                 <Button variant='outline-danger' onClick={onHide}>Закрыть</Button>
-                <ToastContainer/>
             </Modal.Footer>
         </Modal>
     );

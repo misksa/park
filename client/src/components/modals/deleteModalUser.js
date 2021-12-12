@@ -1,41 +1,42 @@
 import React, {useContext} from 'react';
 import {Button, Modal, Dropdown} from "react-bootstrap";
-import {deleteUser, registration} from "../../http/userAPI";
+import {deleteUser, fetchUser} from "../../http/userAPI";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
-import {toast, ToastContainer} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 
 
 const ModalDeleteUser = observer(({show, onHide}) => {
     const {user} = useContext(Context)
+    const {park} = useContext(Context)
 
     const deleteClient = () => {
-        if(!user.SelectedClient.id) {
-            toast.error('Выбери пользователя', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        } else {
+        const setLoading = () => {park.setLoad(true)}
+        const timerId = setInterval(setLoading, 200)
+
+
         const formData = new FormData()
             formData.append('id', user.SelectedClient.id)
-            deleteUser(formData).then(data => onHide())
+            deleteUser(formData).then((r)=>{
+                if(r) {
+                    fetchUser().then(data => {
+                        user.SetClient(data)
+                        user.SetSelectedClient('')
+                    })
+                }
+                clearInterval(timerId)
+                park.setLoad(false)
+            })
+        }
+        const close = () => {
             user.SetSelectedClient('')
         }
-    }
-
     return (
         <Modal
             show={show}
             onHide={onHide}
             size="lg"
             centered
-
+            onExit={close}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -47,8 +48,8 @@ const ModalDeleteUser = observer(({show, onHide}) => {
                         className={'mt-1'}
                     >
                         <Dropdown.Toggle variant={"secondary"}>{user.SelectedClient.username || 'Выбрать пользователя'}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {user.client.map(client =>
+                            <Dropdown.Menu>
+                            {user.Client.map(client =>
                                 <Dropdown.Item
                                     key={client.id}
                                     onClick={() => user.SetSelectedClient(client)}
@@ -61,8 +62,6 @@ const ModalDeleteUser = observer(({show, onHide}) => {
             <Modal.Footer>
                 <Button variant='outline-danger' onClick={deleteClient}>Удалить</Button>
                 <Button variant='light' onClick={onHide}>Закрыть</Button>
-                <ToastContainer/>
-
             </Modal.Footer>
         </Modal>
     );
