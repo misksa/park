@@ -39,18 +39,6 @@ const App = observer(() => {
         }
     }, [user])
 
-    if(localStorage.getItem('accessToken')) {
-        useEffect(()=> {
-            fetchPlace().then(data => park.SetPlace(data))
-            fetchType().then(data => park.SetTypeItem(data))
-            fetchCount().then(data => park.SetCount(data))
-            fetchMessage().then(data => park.SetMessage(data))
-            fetchPublicOffice().then(data => park.SetOffice(data))
-            fetchAuthOffice().then(data => park.SetAuthOffice(data))
-            fetchSubtype().then(data => park.SetSubtype(data))
-            fetchUser().then(data => user.SetClient(data))
-        }, [park, user])
-    }
 
     if (loading) {
         return (

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Container, ButtonGroup, Row, Col} from "react-bootstrap";
 import ModalAddPlace from "../components/modals/modalAddPlace";
 import ModalAddItems from "../components/modals/modalAddItems";
@@ -11,9 +11,22 @@ import ModalDeleteUser from "../components/modals/deleteModalUser";
 import ModalAddType from "../components/modals/addModalType";
 import TableHistory from "../components/tableHistory";
 import {observer} from "mobx-react-lite";
+import {
+    fetchAuthOffice,
+    fetchCount,
+    fetchMessage,
+    fetchPlace,
+    fetchPublicOffice,
+    fetchSubtype,
+    fetchType
+} from "../http/parkAPI";
+import {fetchUser} from "../http/userAPI";
 
 const AdminPanel = observer(() => {
     const {user} = useContext(Context)
+
+    const {park} = useContext(Context)
+
     const [addPlaceVisible, setAddPlaceVisible ] = useState(false)
     const [addPCVisible, setAddPCVisible ] = useState(false)
     const [addOfficeVisible, setAddOfficeVisible] = useState(false)
@@ -22,6 +35,16 @@ const AdminPanel = observer(() => {
     const [addUser, setAddUser] = useState(false)
     const [deleteUser, setDeleteUser] = useState(false)
     const [addTypeVisible, setAddTypeVisible] = useState(false)
+
+    useEffect(()=> {
+        fetchPlace().then(data => park.SetPlace(data))
+        fetchType().then(data => park.SetTypeItem(data))
+        fetchPublicOffice().then(data => park.SetOffice(data))
+        fetchAuthOffice().then(data => park.SetAuthOffice(data))
+        fetchSubtype().then(data => park.SetSubtype(data))
+        fetchUser().then(data => user.SetClient(data))
+    }, [park])
+
     return (
         <Container className='mt-2 ml-1'>
             {user.User.role === 'superuser' ?

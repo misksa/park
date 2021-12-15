@@ -8,15 +8,32 @@ import ParkList from "../components/ParkList/ParkList";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {
-    fetchItem
+    fetchAuthOffice,
+    fetchCount,
+    fetchItem, fetchMessage, fetchPlace, fetchPublicOffice, fetchSubtype, fetchType
 } from "../http/parkAPI";
 import Search from "../components/Search/Search";
 import Pages from "../components/Page";
+import {fetchUser} from "../http/userAPI";
 
 const Park = observer(() => {
     const {park} = useContext(Context)
 
+    const {user} = useContext(Context)
+
+
     const [loadItems, setLoadItems] = useState(false)
+
+    useEffect(()=> {
+        fetchPlace().then(data => park.SetPlace(data))
+        fetchType().then(data => park.SetTypeItem(data))
+        fetchCount().then(data => park.SetCount(data))
+        fetchMessage().then(data => park.SetMessage(data))
+        fetchPublicOffice().then(data => park.SetOffice(data))
+        fetchAuthOffice().then(data => park.SetAuthOffice(data))
+        fetchSubtype().then(data => park.SetSubtype(data))
+        fetchUser().then(data => user.SetClient(data))
+    }, [park])
 
     useEffect( ()=> {
         const setLoad = () => setLoadItems(true)
