@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const $host = axios.create({
-    baseURL: process.env.REACT_APP_SERVER_URL,
+    baseURL: 'http://localhost:5000',
     withCredentials: true,
     Vary: origin
 })
@@ -27,7 +27,7 @@ $host.interceptors.response.use((config) => {
         //
         try {
             //То отправляем запрос на обновление токенов
-            const {data} = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/user/refresh`, {withCredentials: true})
+            const {data} = await axios.get(`http://localhost:5000/api/user/refresh`, {withCredentials: true})
             //Сохраняем токен доступа в локальное хранилище
             localStorage.setItem('accessToken', data.accessToken)
             //Возвращаем наш запрос на который в ответе мы получили ошибку что бы запрос автоматически отправился еще раз
