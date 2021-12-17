@@ -8,7 +8,7 @@ module.exports = function (req, res, next) {
     // if (req.method === "OPTIONS") {
     //     next()
     // }
-    // try {
+    try {
         //достаем токен из заголовка авторизации
         const authorizationHeader = req.headers.authorization
         //Проверяем есть ли токен
@@ -27,9 +27,9 @@ module.exports = function (req, res, next) {
         }
         req.user = userData
         next()
-    // } catch (e) {
-    //
-    //     //Если возникает ошибка выводи сообщение пользователь не авторизован
-    //     return next(ApiError.unauthorized())
-    // }
+    } catch (e) {
+        console.log(e)
+        //Если возникает ошибка выводи сообщение пользователь не авторизован
+        return next(ApiError.unauthorized())
+    }
 }

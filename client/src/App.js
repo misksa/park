@@ -4,20 +4,12 @@ import React, {useContext, useEffect, useState} from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import NavBar from "./components/NavBar";
 import {Context} from "./index";
-import {fetchUser, refresh} from "./http/userAPI";
+import {refresh} from "./http/userAPI";
 import {observer} from "mobx-react-lite";
 import AppRouter from "./components/AppRouter";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Pending from "./components/Notice/Pending/Pending";
-import {
-    fetchAuthOffice,
-    fetchCount,
-    fetchMessage,
-    fetchPlace,
-    fetchPublicOffice, fetchSubtype,
-    fetchType
-} from "./http/parkAPI";
 import Loader from "./components/Loader/Loader";
 
 const App = observer(() => {
@@ -37,7 +29,7 @@ const App = observer(() => {
         } else {
             setLoading(false)
         }
-    }, [user])
+    },[])
 
 
     if (loading) {

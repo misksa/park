@@ -16,8 +16,6 @@ const ModalAddItems = observer(({show, onHide}) => {
     const [cpu, setCpu] = useState('')
     const [ram, setRam] = useState('')
 
-
-
     const AddItems = () => {
         const setLoading = () => {park.setLoad(true)}
         const timerId = setInterval(setLoading, 200)
@@ -54,7 +52,6 @@ const ModalAddItems = observer(({show, onHide}) => {
     const close = () => {
         park.SetSelectedOffice('')
         park.SetSelectedPlace('')
-        park.SetHistoryModal('')
     }
 
     return (
@@ -73,6 +70,22 @@ const ModalAddItems = observer(({show, onHide}) => {
             <Modal.Body>
                 <DropdownOffice title={'Выбрать офис'}/>
                 <DropdownPlace title={'Выбрать место'}/>
+                <Dropdown
+                    as={ButtonGroup}
+                    className={'ml-1'}
+                >
+                    <Dropdown.Toggle variant={"light"}>{park.SelectedSubtype.name || 'Переместить в'}</Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {park.Subtype.map(subtype =>
+                            <Dropdown.Item
+                                key={subtype.id}
+                                onClick={() => park.SetSelectedSubtype(subtype)}
+                            >
+                                {subtype.name}
+                            </Dropdown.Item>
+                        )}
+                    </Dropdown.Menu>
+                </Dropdown>
                 <Form
                     onSubmit={event => event.preventDefault()}
                     onKeyUp={(e) => sendData(e, AddItems)}
