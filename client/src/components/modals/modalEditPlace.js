@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Button, Modal, Dropdown, ButtonGroup, FormControl} from "react-bootstrap";
+import {Button, Modal, FormControl} from "react-bootstrap";
 import {Context} from "../../index";
 import {deletePlace, editPlace, fetchPlace} from "../../http/parkAPI";
 import {observer} from "mobx-react-lite";
@@ -12,11 +12,11 @@ const ModalEditPlace = observer(({show, onHide}) => {
     const DeletePlace = () => {
         const setLoading = () => {park.setLoad(true)}
         const timerId = setInterval(setLoading, 200)
-        deletePlace({placeId: park.SelectedPlace.id}).then((r) => {
+        deletePlace({placeId: park.SelectedModalPlace.id}).then((r) => {
             if(r) {
                 fetchPlace().then(data => {
                     park.SetPlace(data)
-                    park.SetSelectedPlace('')
+                    park.SetSelectedModalPlace('')
                 })
             }
             clearInterval(timerId)
@@ -24,19 +24,19 @@ const ModalEditPlace = observer(({show, onHide}) => {
         })
     }
     const EditPlace = () => {
-                    editPlace({name: name, placeId: park.SelectedPlace.id}).then((r) => {
+                    editPlace({name: name, placeId: park.SelectedModalPlace.id}).then((r) => {
                         if(r) {
                             fetchPlace().then(data => {
                                 park.SetPlace(data)
-                                park.SetSelectedPlace('')
+                                park.SetSelectedModalPlace('')
                                 setName('')
                             })
                         }
                     })
     }
     const close = () => {
-        park.SetSelectedOffice('')
-        park.SetSelectedPlace('')
+        park.SetSelectedModalPlace('')
+        park.SetSelectedModalOffice('')
     }
     return (
         <Modal

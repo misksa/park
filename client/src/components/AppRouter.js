@@ -11,8 +11,9 @@ import {authRoutes, publicRoutes} from "../routes";
 import {Context} from "../index";
 
 import {LOGIN_ROUTE, PARK_ROUTE} from "../utils/consts";
+import {observer} from "mobx-react-lite";
 
-const AppRouter = () => {
+const AppRouter = observer(() => {
 
     //получаем переменную isAuth из UserPark
     //Делаем деструктуризацию, вызываем хук useContext и туда передаем тот контекст который создавали
@@ -38,5 +39,5 @@ const AppRouter = () => {
         </>
 
     )
-}
+})
 export default AppRouter;

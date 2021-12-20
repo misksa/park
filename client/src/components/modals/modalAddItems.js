@@ -26,16 +26,16 @@ const ModalAddItems = observer(({show, onHide}) => {
         formData.append('manage', manage)
         formData.append('cpu', cpu)
         formData.append('ram', ram)
-        formData.append('officeId', park.SelectedOffice.id)
-        formData.append('placeId', park.SelectedPlace.id)
+        formData.append('officeId', park.SelectedModalOffice.id)
+        formData.append('placeId', park.SelectedModalPlace.id)
         formData.append('subtypeId', park.SelectedSubtype.id)
         createItem(formData).then(r =>{
            if(r){
                fetchItem().then(data => {
                    park.SetItem(data.rows)
                    park.SetTotalCount(data.count)
-                   park.SetSelectedOffice('')
-                   park.SetSelectedPlace('')
+                   park.SetSelectedModalOffice('')
+                   park.SetSelectedModalPlace('')
                    park.SetSelectedSubtype('')
                    setName('')
                    setInventory('')
@@ -50,8 +50,8 @@ const ModalAddItems = observer(({show, onHide}) => {
         })
     }
     const close = () => {
-        park.SetSelectedOffice('')
-        park.SetSelectedPlace('')
+        park.SetSelectedModalPlace('')
+        park.SetSelectedModalOffice('')
     }
 
     return (

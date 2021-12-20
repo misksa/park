@@ -15,7 +15,7 @@ const ModalAddPlace = observer(({show, onHide}) => {
         const timerId = setInterval(setLoading, 200)
         const formData = new FormData()
         formData.append('name', name)
-        formData.append('officeId', park.SelectedOffice.id)
+        formData.append('officeId', park.SelectedModalOffice.id)
         createPlace(formData).then((r)=>{
             if(r) {
                 fetchPlace().then(data => {
