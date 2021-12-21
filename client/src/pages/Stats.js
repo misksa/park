@@ -27,6 +27,8 @@ const Stats = observer(() => {
         fetchSubtype().then(data => park.SetSubtype(data))
     }, [park])
 
+    park.SetHistory([])
+
     return (
         <div >
 

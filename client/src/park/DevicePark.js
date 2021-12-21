@@ -37,7 +37,7 @@ export default class Park {
         this._SelectedMessage = {}
         this._page = 1
         this._totalCountItems = 0
-        this._limitItems = 20
+        this._limitItems = 30
         this._pageHistory = 1
         this._totalCountHistory = 0
         this._limitHistory = 27

@@ -13,10 +13,7 @@ import TableHistory from "../components/tableHistory";
 import {observer} from "mobx-react-lite";
 import {
     fetchAuthOffice,
-    fetchCount,
-    fetchMessage,
-    fetchPlace,
-    fetchPublicOffice,
+    fetchPlace, fetchPublicOffice,
     fetchSubtype,
     fetchType
 } from "../http/parkAPI";
@@ -39,16 +36,16 @@ const AdminPanel = observer(() => {
     useEffect(()=> {
         fetchPlace().then(data => park.SetPlace(data))
         fetchType().then(data => park.SetTypeItem(data))
-        fetchPublicOffice().then(data => park.SetOffice(data))
         fetchAuthOffice().then(data => park.SetAuthOffice(data))
+        fetchPublicOffice().then(data => park.SetOffice(data))
         fetchSubtype().then(data => park.SetSubtype(data))
         fetchUser().then(data => user.SetClient(data))
     }, [park])
 
     return (
-        <Container className='mt-2 ml-1'>
+        <div className='d-flex mt-2 ml-1'>
             {user.User.role === 'superuser' ?
-                <Row>
+                <Row md={3}>
                     <Col md={2}>
                         <ButtonGroup vertical>
                             <Button
@@ -101,7 +98,7 @@ const AdminPanel = observer(() => {
                                 Добавить предмет</Button>
                         </ButtonGroup>
                     </Col>
-                    <Col md={10}>
+                    <Col md={'auto'}>
                         <TableHistory />
                     </Col>
                 </Row>
@@ -142,7 +139,7 @@ const AdminPanel = observer(() => {
             <ModalAddUser show={addUser} onHide={() => setAddUser(false)} />
             <ModalDeleteUser show={deleteUser} onHide={() => setDeleteUser(false)} />
             <ModalAddType show={addTypeVisible} onHide={() => setAddTypeVisible(false)} />
-        </Container>
+        </div>
     );
 });
 

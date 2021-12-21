@@ -74,7 +74,7 @@ const ModalAddItems = observer(({show, onHide}) => {
                     as={ButtonGroup}
                     className={'ml-1'}
                 >
-                    <Dropdown.Toggle variant={"light"}>{park.SelectedSubtype.name || 'Переместить в'}</Dropdown.Toggle>
+                    <Dropdown.Toggle variant={"light"}>{park.SelectedSubtype.name || 'Выбрать подтип'}</Dropdown.Toggle>
                     <Dropdown.Menu>
                         {park.Subtype.map(subtype =>
                             <Dropdown.Item

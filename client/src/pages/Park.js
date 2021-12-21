@@ -46,6 +46,7 @@ const Park = observer(() => {
         })
     },[park.SelectedOffice, park.SelectedPlace, park.SelectedSubtype, park.Page, park.Search, park])
 
+    park.SetHistory([])
 
     return (
         <div className={'container-fluid justify-content-center'} >
@@ -59,8 +60,7 @@ const Park = observer(() => {
                     <Pages/>
                 </Col>
                 <Col
-                    sm={1}
-                    className={'ml-5'}
+                    sm={'auto'}
                 >
                     <TypeBar />
                 </Col>

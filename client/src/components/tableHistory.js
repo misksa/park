@@ -8,8 +8,7 @@ import {getPageCount, } from "../utils/pages";
 import {useObserver} from "../utils/useObserver";
 
 const TableHistory = observer(() => {
-    const {park} =useContext(Context)
-    const {user} =useContext(Context)
+    const {park} = useContext(Context)
     const [isLoadHistory, setIsLoadHistory] = useState(false)
     const lastElement = useRef()
     const totalCount = getPageCount(park.totalCountHistory, park.LimitHistory)
@@ -26,12 +25,12 @@ const TableHistory = observer(() => {
             park.SetTotalCountHistory(data.count)
             setIsLoadHistory(false)
         })
-
     }, [park.PageHistory])
 
-
     return (
-        <Table striped bordered hover size="sm">
+        <Table
+            striped bordered hover size="sm"
+        >
                 <thead>
                 <tr>
                     <th>Админ</th>
@@ -50,28 +49,23 @@ const TableHistory = observer(() => {
                         <td>{History.user}</td>
                         <td>{moment(History.createdAt).format('DD-MMM-YYYY HH:mm', 'ru')}</td>
                         <td>{History.action}</td>
-
-                            <td>{History.nameItem}: {History.inventory}</td>
-
+                        <td>{History.nameItem}: {History.inventory}</td>
                         {History.officeId ?
                             park.office.filter(office => office.id === History.officeId).map(office =>
-                                <td key={office.id}>{office.name}</td>)
+                                <td key={office.name}>{office.name}</td>)
                             :
                             <td/>
                         }
-
                         {History.place ?
                             <td>{History.place}</td>
                                 :
                             <td/>
                         }
-
                         {History.manage ?
                             <td>{History.manage}</td>
                                 :
                             <td/>
                         }
-
                         {History.img ?
                             <td
                                 style={{cursor:'pointer'}}
@@ -87,7 +81,6 @@ const TableHistory = observer(() => {
                             :
                             <td/>
                         }
-
                     </tr>
                 )}
                 <div ref={lastElement}/>

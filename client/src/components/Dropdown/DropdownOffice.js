@@ -17,7 +17,7 @@ const DropdownOffice = observer(({title}) => {
                 {park.SelectedModalOffice.name || title}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-                {park.office.map(office =>
+                {park.authOffice.map(office =>
                     <Dropdown.Item
                         key={office.id}
                         onClick={() => {park.SetSelectedModalOffice(office)
