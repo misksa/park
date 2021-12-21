@@ -38,8 +38,7 @@ const TableHistoryModal = observer(({Items, isLoad, totalCount, limit, page, set
                 <tr
                     key={History.id}
                 >
-                    {user.Client.filter(client => client.id === History.userId).map(client =>
-                        <td key={client.id}>{client.username}</td>)}
+                    <td>{History.user}</td>
                     <td>{moment(History.createdAt).format('DD-MMM-YYYY HH:mm', 'ru')}</td>
                     <td>{History.action}</td>
                     {History.officeId ?

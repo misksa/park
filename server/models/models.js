@@ -71,8 +71,8 @@ const history = sequelize.define('history', {
     place: {type: DataTypes.STRING, allowNull: true},
     img: {type: DataTypes.STRING, allowNull: true},
     nameItem: {type: DataTypes.STRING, allowNull: false},
-    inventory: {type: DataTypes.STRING, allowNull: false}
-
+    inventory: {type: DataTypes.STRING, allowNull: false},
+    user: {type: DataTypes.STRING, allowNull: false},
 })
 
 const access = sequelize.define('access', {
@@ -117,9 +117,6 @@ history.belongsTo(item)
 //Связь между историей и офисами
 office.hasMany(history)
 history.belongsTo(office)
-
-user.hasMany(history)
-history.belongsTo(user)
 
 //Связь между заметкой и предметами парка
 item.hasMany(Message)

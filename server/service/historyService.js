@@ -9,7 +9,7 @@ class historyService {
                 officeId: Item.officeId,
                 place: Place,
                 itemId: Item.id,
-                userId: User.id,
+                user: User.username,
                 nameItem: Item.name,
                 inventory: Item.inventory
             })
@@ -36,10 +36,10 @@ class historyService {
         try {
             let historyData
             if(!Place) {
-                 historyData =  await history.create({action: 'Перемещен', manage: manage, itemId: id, userId: User.id, nameItem: Item.name, inventory: Item.inventory})
+                 historyData =  await history.create({action: 'Перемещен', manage: manage, itemId: id, user: User.username, nameItem: Item.name, inventory: Item.inventory})
             }
             if(!manage) {
-                historyData =  await history.create({action: 'Перемещен', place: Place, itemId: id, userId: User.id, nameItem: Item.name, inventory: Item.inventory})
+                historyData =  await history.create({action: 'Перемещен', place: Place, itemId: id, user: User.username, nameItem: Item.name, inventory: Item.inventory})
             }
             return historyData
         } catch (e) {
@@ -53,7 +53,7 @@ class historyService {
                 place: Place,
                 officeId: officeId,
                 itemId: idItems,
-                userId: User.id,
+                user: User.username,
                 img: fileName,
                 nameItem: Item.name,
                 inventory: Item.inventory
@@ -68,7 +68,7 @@ class historyService {
                 action: 'Выдан на руки',
                 manage: name,
                 itemId: id,
-                userId: User.id,
+                user: User.username,
                 img: fileName,
                 nameItem: Item.name,
                 inventory: Item.inventory
