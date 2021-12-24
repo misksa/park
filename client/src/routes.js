@@ -4,7 +4,7 @@
 import {ADMIN_ROUTE, PARK_ROUTE, LOGIN_ROUTE, STATS_ROUTE} from "./utils/consts";
 
 //Импортируем страничку AdminPanel
-import AdminPanel from "./pages/AdminPanel";
+import AdminPanel from "./pages/AdminPanel/AdminPanel";
 
 //Импортируем страничку Auth
 import Auth from "./pages/Login";
