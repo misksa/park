@@ -16,7 +16,7 @@ const ParkList = observer(({loadItems}) => {
 
             return (
                 <Row
-                    sm={6}
+                   xl={5} lg={3} md={2} sm={2}  xs={1}
                     className={'d-flex'}
                 >
                     {park.Items.map(Items =>

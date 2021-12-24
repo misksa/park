@@ -2,18 +2,20 @@ import React, {useContext} from 'react';
 
 import {Accordion, Card, Button, ListGroupItem} from "react-bootstrap";
 
-import {Context} from "../index";
+import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
+import cl from './TypeBar.module.css'
 
 const TypeBar = observer(() => {
     const {park} = useContext(Context)
     return (
         <div className={'d-flex'}>
-        <Accordion >
+        <Accordion className={cl.TypeBar}>
             {park.typeItem.map(typeItem =>
                 <Card key={typeItem.id}>
                     <Card.Header>
                         <Accordion.Toggle
+                            className={cl.Toggle}
                             as={Button}
                             variant="button"
                             eventKey={typeItem.id}

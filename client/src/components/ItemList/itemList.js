@@ -34,14 +34,13 @@ const ItemList = observer(({Items}) => {
             <Card
                 className={cl.ItemBody}
             >
-                <div className='d-flex justify-content-end align-items-center ml-2 mt-1'>
+                <div>
                     <BadgeStatusPlace Items={Items} />
-                    <div className='d-flex mb-4'>
                         {park.replaceItems &&
                             <input
                                 key={Items.id}
                                 type={'checkbox'}
-                                className='mr-2'
+                                className={cl.input}
                                 onChange={(e)=> {
                                     chooseItems(e)
                                 }
@@ -49,7 +48,6 @@ const ItemList = observer(({Items}) => {
                             />
                         }
                     </div>
-                </div>
                 <Card.Body
                     style={{cursor:'pointer'}} className='p-1'
                     onClick={() => {
@@ -62,8 +60,8 @@ const ItemList = observer(({Items}) => {
                     )}
                         <div className='ml-1'>{Items.name}</div>
                     </div>
-                    <div>Инвентарный №: {Items.inventory}</div>
-                    <div>Менеджер: {Items.manage}</div>
+                    <div>№ {Items.inventory}</div>
+                    <div>{Items.manage}</div>
                 </Card.Body>
                 <ModalItems show={modalItem} Items={Items} onHide={() => setModalItem(false)} />
             </Card>

@@ -1,23 +1,24 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Container, ButtonGroup, Row, Col} from "react-bootstrap";
-import ModalAddPlace from "../components/modals/modalAddPlace";
-import ModalAddItems from "../components/modals/modalAddItems";
-import ModalAddOffice from "../components/modals/modalAddOffice";
-import ModalAddSubtype from "../components/modals/modalAddSubtype";
-import {Context} from "../index";
-import ModalEditPlace from "../components/modals/modalEditPlace";
-import ModalAddUser from "../components/modals/addModalUser";
-import ModalDeleteUser from "../components/modals/deleteModalUser";
-import ModalAddType from "../components/modals/addModalType";
-import TableHistory from "../components/tableHistory";
+import ModalAddPlace from "../../components/modals/modalAddPlace";
+import ModalAddItems from "../../components/modals/modalAddItems";
+import ModalAddOffice from "../../components/modals/modalAddOffice";
+import ModalAddSubtype from "../../components/modals/modalAddSubtype";
+import {Context} from "../../index";
+import ModalEditPlace from "../../components/modals/modalEditPlace";
+import ModalAddUser from "../../components/modals/addModalUser";
+import ModalDeleteUser from "../../components/modals/deleteModalUser";
+import ModalAddType from "../../components/modals/addModalType";
+import TableHistory from "../../components/tableHistory/tableHistory";
 import {observer} from "mobx-react-lite";
+import cl from './AdminPanel.module.css'
 import {
     fetchAuthOffice,
     fetchPlace, fetchPublicOffice,
     fetchSubtype,
     fetchType
-} from "../http/parkAPI";
-import {fetchUser} from "../http/userAPI";
+} from "../../http/parkAPI";
+import {fetchUser} from "../../http/userAPI";
 
 const AdminPanel = observer(() => {
     const {user} = useContext(Context)
@@ -43,11 +44,17 @@ const AdminPanel = observer(() => {
     }, [park])
 
     return (
-        <div className='d-flex mt-2 ml-1'>
+        <Container
+            fluid
+            // className={' d-flex ml-3'}
+        >
             {user.User.role === 'superuser' ?
-                <Row md={3}>
-                    <Col md={2}>
-                        <ButtonGroup vertical>
+                    <Row md={3}>
+                        <Col xl={2} lg={2} md={2}>
+                        <ButtonGroup
+                            vertical
+                            className={cl.button}
+                        >
                             <Button
                                 variant={'secondary'}
                                 className='mt-1'
@@ -97,14 +104,17 @@ const AdminPanel = observer(() => {
                             >
                                 Добавить предмет</Button>
                         </ButtonGroup>
-                    </Col>
-                    <Col md={'auto'}>
-                        <TableHistory />
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col
+                            xl={10} lg={10} md={10} xs={2} sm={1}
+                            // md={'auto'}
+                        >
+                            <TableHistory />
+                        </Col>
+                        </Row>
                 :
-                <Row>
-                    <Col md={2}>
+                        <Row>
+                         <Col>
                         <ButtonGroup vertical>
                             <Button
                                 variant={'secondary'}
@@ -126,10 +136,8 @@ const AdminPanel = observer(() => {
                                 Редактировать/удалить КЦ
                             </Button>
                         </ButtonGroup>
-                    </Col>
-                    <Col>
-                    </Col>
-                </Row>
+                         </Col>
+                        </Row>
             }
             <ModalAddPlace show={addPlaceVisible} onHide={() => setAddPlaceVisible(false)} />
             <ModalAddItems show={addPCVisible} onHide={() => setAddPCVisible(false)} />
@@ -139,7 +147,7 @@ const AdminPanel = observer(() => {
             <ModalAddUser show={addUser} onHide={() => setAddUser(false)} />
             <ModalDeleteUser show={deleteUser} onHide={() => setDeleteUser(false)} />
             <ModalAddType show={addTypeVisible} onHide={() => setAddTypeVisible(false)} />
-        </div>
+        </Container>
     );
 });
 

@@ -2,8 +2,8 @@
  список офисов и мест в офисе, так же типы позиций */
 import React, {useContext, useEffect, useState} from 'react';
 import {Col, Row} from "react-bootstrap";
-import PlaceBar from "../components/PlaceBar";
-import TypeBar from "../components/TypeBar";
+import PlaceBar from "../components/PlaceBar/PlaceBar";
+import TypeBar from "../components/TypeBar/TypeBar";
 import ParkList from "../components/ParkList/ParkList";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
@@ -55,7 +55,7 @@ const Park = observer(() => {
                 <Col sm={'auto'}>
                     <PlaceBar />
                 </Col>
-                <Col md={0} >
+                <Col>
                     <ParkList loadItems={loadItems} setLoadItems={setLoadItems} />
                     <Pages/>
                 </Col>

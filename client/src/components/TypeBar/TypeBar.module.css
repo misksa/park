@@ -1,0 +1,12 @@
+
+@media screen and (max-width:1280px) {
+    .Toggle {
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width:1366px) {
+    .Toggle {
+        font-size: 0.9rem;
+    }
+}

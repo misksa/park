@@ -1,0 +1,22 @@
+/*.Table {*/
+/*    width: 10rem;*/
+/*}*/
+@media screen and (max-width:1280px) {
+    .Table {
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width:1366px) {
+    .Table {
+        font-size: 0.9rem;
+    }
+}
+
+.td {
+    text-align: center;
+}
+
+.img {
+    cursor: pointer;
+}

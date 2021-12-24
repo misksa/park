@@ -1,10 +1,11 @@
 import React, {useContext} from 'react';
 
-import {Context} from "../index";
+import {Context} from "../../index";
 
 import {Accordion, Card, Button, ListGroupItem} from "react-bootstrap";
 
 import {observer} from "mobx-react-lite";
+import cl from './PlaceBar.module.css'
 
 const PlaceBar = observer(() => {
     const {park} = useContext(Context)
@@ -15,6 +16,7 @@ const PlaceBar = observer(() => {
                         <Card key={office.id}>
                             <Card.Header>
                                 <Accordion.Toggle
+                                    className={cl.Toggle}
                                     as={Button}
                                     variant="button"
                                     active={office.id === park.SelectedOffice.id}
