@@ -1,4 +1,3 @@
-//Роутер мест в офисах
 //Получаем Роутер из express
 const Router = require('express')
 
@@ -7,10 +6,11 @@ const router = new Router()
 
 //Импортируем placeController где находятся функции
 const placeController = require('../controllers/placeController')
+//Импортируем что бы проверять авторизован ли пользователь
 const authMiddleware = require("../middleware/authMiddleware");
 
-//Методы по работе с местом в офисе
-//Метод пост что бы создавать места в офисе
+//API по работе с местом в офисе
+//ендпоинт пост что бы создавать места в офисе
 router.post('/', authMiddleware, placeController.create)
 
 router.post('/edit', authMiddleware, placeController.edit)

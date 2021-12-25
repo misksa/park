@@ -1,6 +1,7 @@
 const {history} = require("../models/models");
 
 class historyService {
+    //Функция создание истории
     async Create(User, Item, Place) {
         try {
             return await history.create({
@@ -17,6 +18,7 @@ class historyService {
             throw e
         }
     }
+    //Функция получения всей истории
     async Get (limit, offset) {
         return await history.findAndCountAll({
             order: [
@@ -25,6 +27,7 @@ class historyService {
             limit, offset
         })
     }
+    //Функция получения истории одного предмета
     async GetOne (id, limit, offset) {
         return await history.findAndCountAll({
             order: [
@@ -32,6 +35,7 @@ class historyService {
             ],
             where:{itemId:id}, limit, offset})
     }
+    //Функция при обновлении предметов
     async Update (id, Place, manage, User, Item) {
         try {
             let historyData
@@ -46,6 +50,7 @@ class historyService {
             throw e
         }
     }
+    //Функция при перемещении предметов между офисами
     async Replace (officeId, Place, idItems, User, fileName, Item ) {
         try {
             return await history.create({
@@ -62,6 +67,7 @@ class historyService {
             throw e
         }
     }
+    //Функция при выдаче предмета на руки
     async Give (name, id, User, fileName, Item) {
         try {
             return await history.create({

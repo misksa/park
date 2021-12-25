@@ -21,11 +21,9 @@ module.exports = function (role) {
                 return res.status(401).json({message: 'Пользователь не авторизован!'})
             }
 
-            //Проверяем токен на валидность, первым параметром пишем токен вторым секретный ключ
-            // const decoded = jwt.verify(token, process.env.SECRET_KEY)
+            //Декодируем токен
             const decoded = jwt.decode(token)
-
-            //Сравниваем декодированную с ролью в запросе
+            //Сравниваем декодированную роль с ролью в запросе
             if (decoded.role !== role) {
                 //Если не равно выводим ошибку
                 return res.status(403).json({message: 'Нет доступа!'})

@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const userDto = require('../dtos/userDtos')
 const {handleError} = require("pg/lib/native/query");
 class userService {
+    //Функция регестрации
     async registration (login, password, username) {
             //Создаем переменную где ищем в базе пользователя с введенным логином
             const candidate = await user.findOne({where: {login}})
@@ -18,11 +19,12 @@ class userService {
             //Если 2 условия выше не сработали хэшируем пароль
             const hashPassword = await bcrypt.hash(password, 7)
 
-            //Создаем пользователя
+            //Создаем пользователя с ролью по умолчанию admin
             const User = await user.create({login, password: hashPassword, role: 'admin', username})
 
             return User
     }
+    //Функция логина
     async login(login, password) {
         if(!login || !password) {
             throw ApiError.noContent('Логин и пароль не может быть пустым')
@@ -31,13 +33,17 @@ class userService {
         if(!User) {
             throw ApiError.badRequest('Неверно введен логин или пароль')
         }
+        //Проверяем верно ли введен пароль
         const isPassEquals = await bcrypt.compare(password, User.password)
         if(!isPassEquals) {
             throw ApiError.badRequest('Неверно введен логин или пароль')
         }
         const UserDto = new userDto(User)
+        //если все верно генерируем токены
         const tokens =  tokenService.generateToken({...UserDto})
+        //Сохраняем токены
         await tokenService.saveToken(UserDto.id, tokens.refreshToken)
+        //и возвращаем их из функции
         return {...tokens, User: UserDto}
     }
 
@@ -50,7 +56,7 @@ class userService {
         const destroyToken = await token.destroy({where: {userId: userId}})
        return destroyToken
    }
-
+   //Обновление токенов
    async refresh (refreshToken) {
         if(!refreshToken) {
             throw ApiError.unauthorized()

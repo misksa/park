@@ -21,15 +21,17 @@ module.exports = function (req, res, next) {
         if (!accessToken) {
             return next(ApiError.unauthorized())
         }
+        //проверяем accessToken на валидность
         const userData = tokenService.validateAccessToken(accessToken)
         if (!userData) {
             return next(ApiError.unauthorized())
         }
+        //Возвращаем userData на клиент
         req.user = userData
         next()
     } catch (e) {
         console.log(e)
-        //Если возникает ошибка выводи сообщение пользователь не авторизован
+        //Если возникает ошибка выводим  сообщение пользователь не авторизован
         return next(ApiError.unauthorized())
     }
 }

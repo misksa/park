@@ -9,14 +9,14 @@ module.exports = new Sequelize(
     //название базы данных
     process.env.DB_NAME,
 
-    //Пользователь
+    //Имя пользователя
     process.env.DB_USER,
 
     //пароль
     process.env.DB_PASSWORD,
     {
 
-        //объект с портом и хостом и обозначения диалекта для бд postgreSQL
+        //объект с портом и хостом и обозначения диалекта для бд postgresSQL
         dialect: 'postgres',
         host: process.env.DB_HOST,
         port: process.env.DB_PORT

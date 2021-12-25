@@ -1,4 +1,3 @@
-//Роутер техники
 //Получаем Роутер из express
 const Router = require('express')
 
@@ -7,13 +6,14 @@ const router = new Router()
 
 //Импортируем technicsController где находятся функции
 const typeController = require('../controllers/typeController')
+//Импортируем что бы проверять авторизован ли пользователь
 const authMiddleware = require("../middleware/authMiddleware");
 
-//Методы по работе с юзерами
-//Метод пост что бы создавать новую технику
+//API по работе с юзерами
+//Эндпоинт пост что бы создавать типы
 router.post('/', authMiddleware, typeController.create)
 
-//Получать технику
+//Получать типы
 router.get('/', authMiddleware, typeController.get)
 
 //экспортируем роутер из

@@ -6,13 +6,18 @@ const accessService = require('./accessService')
 const { Op } = require("sequelize");
 const path = require("path");
 class itemService {
+    //Функция получения предметов
     async get(officeId, placeId, subtypeId, User, limit, offset, search) {
         try {
             let Item
+            //Если пользователь Админ
             if(User.role === 'admin') {
+                //Если не указаны офис, место и подтип
                 if(!officeId && !placeId && !subtypeId) {
+                    //То проверяем к чему есть доступ
                     const Access = await accessService.itemAccess(User.id)
                     console.log(Access)
+                    //И делаем запрос с поиском и и с доступными офисами
                     Item = await item.findAndCountAll({where: {
                         officeId: {
                             [Op.or]: Access
@@ -30,7 +35,7 @@ class itemService {
                 //Проверяем условие если и officeId и placeId не имеет какое-либо значение
                 if(!officeId && !placeId && subtypeId) {
                     const Access = await accessService.itemAccess(User.id)
-                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId
+                    //То выводим записи ноуты со всеми совпадающими значениями placeId и officeId и поисковым запросом
                     Item = await item.findAndCountAll({where:{
                             officeId: {
                                 [Op.or]: Access
@@ -47,6 +52,7 @@ class itemService {
                     })
                 }
             } else {
+                //Иначе мы суперпользователь и нам доступны все предметы
                 if(!officeId && !placeId && !subtypeId) {
                     //То выводим все предметы
                     Item = await item.findAndCountAll({where : {
@@ -150,6 +156,7 @@ class itemService {
         }
 
     }
+    //Создание предмета
     async create (name, serial, inventory, manage, cpu, ram, placeId, subtypeId, officeId, User) {
         try {
             const ItemData = await item.create({name, serial, inventory, manage, cpu, ram, placeId, subtypeId, officeId})
@@ -162,6 +169,7 @@ class itemService {
         }
 
     }
+    //Редактирование предмета
     async update (id, placeId, manage, User) {
         try {
             let Item;
@@ -195,6 +203,7 @@ class itemService {
         }
 
     }
+    //Перемещение предметов между офисами
     async replaceItem (id, officeId, placeId, img, User) {
         try{
             const idItems = id.split(',')
@@ -214,6 +223,7 @@ class itemService {
             throw e
         }
     }
+    //Выдача предметов на руки
     async give (id, name, img, User) {
         try {
             let Item

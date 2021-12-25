@@ -8,11 +8,13 @@ const ApiError = require("../error/apiError");
 
 //создаем класс функций для создания, получения и редактирования записей бд в таблице ноутов
 class itemController {
+
+    //Функция создания предметов
     async create (req, res, next) {
         try {
             const {name, serial, inventory, manage, cpu, ram, placeId, subtypeId, officeId} = req.body
             if(placeId === 'undefined' || subtypeId === 'undefined' || officeId === 'undefined') {
-                throw ApiError.noContent('Выбери офис, место и тип техники')
+                throw ApiError.noContent('Выбери офис, место и тип тиехник')
             }
             if (!name || !serial || !inventory) {
                 throw ApiError.noContent('Заполни обязательные поля')
@@ -25,11 +27,10 @@ class itemController {
             return res.json(e)
         }
     }
+    //Функция получения предметов
     async get (req, res, next) {
         try {
             let {officeId, placeId, subtypeId, limit, page, search} = req.query
-            page = page || 1
-            limit = limit || 20
             let offset = page * limit - limit
             const User = await dtoService.User(req.headers.authorization)
             const getItems = await itemService.get(officeId, placeId, subtypeId, User, limit, offset, search)
@@ -38,6 +39,7 @@ class itemController {
             return res.json(e)
         }
     }
+    //Функция для редактирования предметов
     async update (req, res, next) {
         try {
             const {id, placeId, manage} = req.body
@@ -45,13 +47,14 @@ class itemController {
                 throw ApiError.noContent('Нужно внести хоть какие-то изменения')
             }
             const User = await dtoService.User(req.headers.authorization)
-            console.log(User)
             const UpdateItem = await itemService.update(id, placeId, manage, User)
             return res.json({status: 200, message: 'Изменили!'})
         } catch (e) {
             return res.json(e)
         }
     }
+
+    //Функция для перемещения предметов между офисами
     async replaceOffice (req, res, next) {
         try {
             const {id,officeId, placeId} = req.body
@@ -72,6 +75,7 @@ class itemController {
             return res.json(e)
         }
     }
+    //Функция для изменения статуса предмета "бейджик"
     async status (req, res, next) {
         try {
             const {id, placeStatus} = req.body
@@ -84,6 +88,8 @@ class itemController {
             return res.json(e)
         }
     }
+
+    //Функция для выдачи предмета на руки
     async giveItem (req, res, next) {
         try {
             const {id,name} = req.body

@@ -8,6 +8,7 @@ const ApiError = require('../error/apiError')
 
 //создаем класс функций для создания и получения мест в офисе
 class typeController {
+    //Создание типов предметов пример мебель, сетевое оборудование
     async create (req, res, next) {
         try {
             const {name} = req.body

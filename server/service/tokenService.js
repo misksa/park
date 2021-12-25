@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const {token} = require('../models/models')
 class tokenService {
+    //Функция генерации токена
     generateToken(payload) {
         const accessToken = jwt.sign(payload, process.env.SECRET_KEY_ACCESS, {expiresIn: '5d'})
         const refreshToken = jwt.sign(payload, process.env.SECRET_KEY_REFRESH, {expiresIn: '15d'})
@@ -9,6 +10,7 @@ class tokenService {
             refreshToken
         }
     }
+    //Функция проверки токена на валидность
     validateAccessToken (token) {
         try {
             const userData = jwt.verify(token, process.env.SECRET_KEY_ACCESS)
@@ -17,7 +19,7 @@ class tokenService {
             return null
         }
     }
-
+    //функция проверки рефреш токена на валидность
     validateRefreshToken (token) {
         try {
             const userData = jwt.verify(token, process.env.SECRET_KEY_REFRESH)
@@ -26,6 +28,7 @@ class tokenService {
             return null
         }
     }
+    //Сохранение токенов в бд
     async saveToken(userId, refreshToken) {
         const tokenData  =  await token.findOne( {where:{userId} })
         if (tokenData) {
@@ -35,6 +38,7 @@ class tokenService {
         const TokenN = await token.create({userId: userId, refreshToken})
         return TokenN
     }
+    //Удаление токенов
     async removeToken (refreshToken) {
         const TokenData = await token.destroy({where: {refreshToken}})
             return TokenData

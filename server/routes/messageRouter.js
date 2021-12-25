@@ -1,6 +1,6 @@
-//Основной роутер приложения
 //Получаем Роутер из express
 const Router = require('express')
+//Импортируем что бы проверять авторизован ли пользователь
 const authMiddleware = require('../middleware/authMiddleware')
 //Создаем объект роутера
 const router = new Router()
@@ -8,7 +8,7 @@ const router = new Router()
 //Импортируем messageController где находятся функции
 const messageController = require('../controllers/messageController')
 
-//Методы по работе с сообщениями
+//API по работе с сообщениями
 //Отправка сообщения
 router.post('/', authMiddleware, messageController.send)
 

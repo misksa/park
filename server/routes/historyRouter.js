@@ -1,6 +1,6 @@
-//Основной роутер приложения
 //Получаем Роутер из express
 const Router = require('express')
+//Импортируем что бы проверять авторизован ли пользователь
 const authMiddleware = require('../middleware/authMiddleware')
 
 //Создаем объект роутера
@@ -9,12 +9,19 @@ const router = new Router()
 //Импортируем messageController где находятся функции
 const historyController = require('../controllers/historyController')
 
-//Методы по работе с сообщениями
+//API по работе с историей
 
-// Получение сообщений об изменении
-router.get('/', authMiddleware, historyController.get)
+// Получение истории
+router.get('/',
+    //проверяем авторизован ли пользователь
+    authMiddleware,
+    historyController.get)
 
-router.get('/getOne', authMiddleware, historyController.getOne)
+//Получение истории об одном предмете
+router.get('/getOne',
+    //проверяем авторизован ли пользователь
+    authMiddleware,
+    historyController.getOne)
 
 
 //экспортируем роутер из файла

@@ -51,11 +51,13 @@ const item = sequelize.define('item', {
     placeStatus: {type: DataTypes.INTEGER, defaultValue: 1, allowNull: false },
 })
 
+//Модель типов
 const type = sequelize.define('type', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: {type: DataTypes.STRING, allowNull: false },
 })
 
+//Модель подтипов
 const subtype = sequelize.define('subtype', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: {type: DataTypes.STRING, allowNull: false },
@@ -75,6 +77,7 @@ const history = sequelize.define('history', {
     user: {type: DataTypes.STRING, allowNull: false},
 })
 
+//Модель доступа к офисам
 const access = sequelize.define('access', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 })

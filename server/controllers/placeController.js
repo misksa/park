@@ -8,6 +8,7 @@ const ApiError = require("../error/apiError");
 
 //создаем класс функций для создания и получения мест в офисе
 class placeController {
+    //функция создания мест в офисе
     async create (req, res, next) {
         try {
             const {name, officeId} = req.body
@@ -23,6 +24,7 @@ class placeController {
             return res.json(e)
         }
     }
+    //функция получение мест
     async get (req, res, next) {
         try {
             const places = await place.findAll()
@@ -31,6 +33,7 @@ class placeController {
             return res.json(e)
         }
     }
+    //функция удаления мест
     async delete (req, res, next) {
         try {
             const {placeId} = req.body
@@ -42,8 +45,8 @@ class placeController {
         } catch (e) {
             return res.json(e)
         }
-
     }
+    //функция редактирования мест в офисе
     async edit (req, res, next) {
         try {
             const {placeId, name} = req.body

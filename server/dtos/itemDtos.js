@@ -1,3 +1,4 @@
+//Объект с данными о предмете
 module.exports = class itemDto {
     id;
     name;

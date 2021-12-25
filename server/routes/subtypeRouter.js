@@ -1,4 +1,3 @@
-//Роутер техники
 //Получаем Роутер из express
 const Router = require('express')
 
@@ -7,13 +6,14 @@ const router = new Router()
 
 //Импортируем technicsController где находятся функции
 const subtypeController = require('../controllers/subtypeController')
+//Импортируем что бы проверять авторизован ли пользователь
 const authMiddleware = require("../middleware/authMiddleware");
 
-//Методы по работе с юзерами
-//Метод пост что бы создавать новую технику
+//API по работе с подтипами
+//Ендпоинт  что бы создавать новые подтипы
 router.post('/', authMiddleware, subtypeController.create)
 
-//Получать технику
+//Получать подтипы
 router.get('/', authMiddleware, subtypeController.get)
 
 //экспортируем роутер из

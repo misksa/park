@@ -37,28 +37,31 @@ class userController {
             return res.json(e)
         }
     }
+
     async logout (req, res, next) {
         try {
             const {refreshToken} = req.cookies
             const token = await userService.logout(refreshToken)
+            //очищаем куки
             res.clearCookie('refreshToken')
             return res.json({token})
         } catch (e) {
             return res.json(e)
         }
     }
-
+    //функция обновления токенов
     async refresh (req, res, next) {
         try {
             const {refreshToken} = req.cookies
-            console.log(refreshToken)
             const userData = await userService.refresh(refreshToken)
+            //Отправляем куки
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
             return res.json(userData)
         } catch (e) {
             return res.json(e)
         }
     }
+    //функция получение всех пользователей
     async get (req, res, next) {
         try {
             const getUser = await user.findAll()
@@ -67,6 +70,7 @@ class userController {
             return res.json(e.message)
         }
     }
+    //функция удаления пользователей
     async delete (req, res, next) {
         try {
             const {id} = req.query

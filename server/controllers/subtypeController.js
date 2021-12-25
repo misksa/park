@@ -9,6 +9,7 @@ const ApiError = require('../error/apiError')
 
 //создаем класс функций для создания и получения мест в офисе
 class subtypeController {
+    //функция создания подтипов например ноутбуки, камеры, коммутаторы
     async create (req, res, next) {
         try {
             const {name, typeId} = req.body
@@ -28,6 +29,7 @@ class subtypeController {
             return res.json(e)
         }
     }
+    //функция получения подтипов
     async get (req, res, next) {
         try {
             const Subtype = await subtype.findAll()

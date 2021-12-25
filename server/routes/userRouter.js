@@ -8,15 +8,16 @@ const router = new Router()
 //ипортируем контроллер для юзер роута
 const userController = require('../controllers/userController')
 
-//Импортируем checkRoleMiddleware
+//Импортируем что бы проверять авторизован ли пользователь
 const authMiddleware = require('../middleware/authMiddleware')
 
-//Импортируем checkMiddleware
+//Импортируем checkRoleMiddleware для проверки роли
 const checkRoleMiddleware = require('../middleware/checkRoleMiddleware')
 
 //Описываем методы по работе с юзерами а так же прикручиваем вторым параметром функции
 //Метод пост для регистрации второй параметр функция регистрации
 router.post('/registration',
+    //Проверяем роль пользователя который регестрируется
     checkRoleMiddleware('superuser'),
     userController.registration)
 

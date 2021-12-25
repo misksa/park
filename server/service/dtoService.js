@@ -6,10 +6,12 @@ const itemDto = require("../dtos/itemDtos")
 
 class dtoService {
 
+    //Получаем объект пользователя
     async User(token) {
         const User = Decode(token)
         return new userDto(User)
     }
+    //получаем объект предмета
     async Item(item){
         return new itemDto(item)
     }
