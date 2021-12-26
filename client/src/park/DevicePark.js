@@ -183,38 +183,11 @@ export default class Park {
         return this._totalCountHistory
     }
 
-    SetPageHistoryModal(page) {
-        this._pageHistoryModal = page
-    }
-
-    SetTotalCountHistoryModal(totalCountHistory) {
-        this._totalCountHistoryModal = totalCountHistory
-    }
-
-    get LimitHistoryModal () {
-        return this._limitHistoryModal
-    }
-    get PageHistoryModal() {
-        return this._pageHistoryModal
-    }
     get totalCountHistoryModal() {
         return this._totalCountHistoryModal
     }
 
 //Пагинация для сообщений------------------------------------------------------------------------------------------
-    SetPageMessage(page) {
-        this._pageMessage = page
-    }
-    SetTotalCountMessage(totalCount) {
-        this._totalCountMessage = totalCount
-    }
-
-    get LimitMessage () {
-        return this._limitMessage
-    }
-    get PageMessage() {
-        return this._pageMessage
-    }
     get totalCountMessage() {
         return this._totalCountMessage
     }
@@ -225,9 +198,7 @@ export default class Park {
     SetSelectedEdit (edit) {
         this._SelectedEdit = edit
     }
-    get Edit () {
-        return this._edit
-    }
+
     get SelectedEdit () {
         return this._SelectedEdit
     }
@@ -235,14 +206,9 @@ export default class Park {
     SetMessage(Message) {
         this._Message = Message
     }
-    SetSelectedMessage(Message) {
-        this._SelectedMessage = Message
-    }
+
     get Message() {
         return this._Message
-    }
-    get SelectedMessage() {
-        return this._SelectedMessage
     }
     //История----------------------------------------------------------------------------------
     SetHistory(History) {
@@ -251,12 +217,7 @@ export default class Park {
     get History() {
         return this._history
     }
-    SetHistoryModal(History) {
-        this._history = History
-    }
-    get HistoryModal() {
-        return this._history
-    }
+
     //Перемещение предметов между офисами--------------------------------------------------------------
     SetReplaceItems(boolean) {
         this._replaceItems = boolean

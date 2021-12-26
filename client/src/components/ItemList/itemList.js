@@ -1,3 +1,4 @@
+//Компонент предметов
 import React, {useContext, useState} from 'react';
 import {Card, Col} from "react-bootstrap";
 import ModalItems from "../modals/ModalItems/modalItems";
@@ -13,6 +14,7 @@ const ItemList = observer(({Items}) => {
 
     const [modalItem, setModalItem] = useState(false)
 
+    //Выбираем предметы для переноса
     const chooseItems = (e) => {
         if(e.target.checked) {
             park.SetSelectedItems([...park.SelectedItems, Items])

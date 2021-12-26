@@ -1,3 +1,4 @@
+//Компонент выбора офиса
 import React, {useContext} from 'react';
 import {ButtonGroup, Dropdown} from "react-bootstrap";
 import {Context} from "../../index";
